@@ -1,0 +1,24 @@
+<div class="w-full h-full flex flex-row justify-center items-center">
+    <mat-card class="overlay" appearance="outlined">
+        <div class="py-8">
+            <form [formGroup]="loginForm" class="example-form">
+                <div class="w-96 h-62 flex flex-col justify-center items-center">
+                    <app-form-textfield class="w-full px-8" formControlName="username" labelText="Username" placeHolderText="Username"></app-form-textfield>
+                    <app-form-textfield class="w-full px-8" formControlName="password" labelText="Password" placeHolderText="Password"></app-form-textfield>
+                    <div class="w-full flex justify-end px-8 py-1">
+                        <app-link-button [buttonText]="'Forgot Password'"></app-link-button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="flex flex-col justify-center p-8">
+            <div class="py-4">
+                <app-action-button (clicked)="login()" [buttonText]="'Sign In'"></app-action-button>
+            </div>
+            <div class="py-2">
+                <app-link-button [buttonText]="'Register'"></app-link-button>
+            </div>
+        </div>
+    </mat-card>
+</div>
+

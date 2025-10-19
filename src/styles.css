@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --mat-toolbar-container-background-color: rgb(22, 56, 101);
+  --mat-toolbar-container-text-color: white;
+  --mat-sys-primary: #0b57d0;
+  --mat-sys-tertiary: #1b6ef3;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-surface: #ffffff;
+  --mat-sys-on-surface: #1f1f1f;
+  --mat-sys-body-medium: 400 1rem/1.5 "Roboto", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+ 
+}
+
+html { color-scheme: light; }
+
+body {
+  background-color: var(--mat-sys-surface, #ffffff);
+  color: var(--mat-sys-on-surface, #1f1f1f);
+  font: var(--mat-sys-body-medium, 400 1rem/1.5 "Roboto", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif);
+  margin: 0;
+}
+
+html, body { height: 100%; }
+
+body {
+  padding: 0;
+  background-image: url('assets/images/stadium-bg-landscape.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.mat-mdc-card.mdc-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.mat-mdc-card.mdc-card:hover {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.mat-mdc-menu-content {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.75rem;
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  padding: 0.25rem 0;
+  transition: background 0.3s ease;
+}

@@ -1,0 +1,11 @@
+
+<mat-form-field class="w-full" appearance="fill">
+    <mat-label>{{ labelText }}</mat-label>
+
+    <input matInput [type]="type" [disabled]="disabled" class="bg-transparent hover:bg-transparent"
+        [value]="value ?? ''" (input)="onInput($any($event.target).value)" (blur)="onBlur()"/>
+
+    @if (hintText) {
+        <mat-hint>{{ hintText }}</mat-hint>
+    }
+</mat-form-field>

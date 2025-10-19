@@ -1,0 +1,32 @@
+<app-navbar></app-navbar>
+
+<div class="app-layout">
+  @if(signedIn) {
+    <aside class="sidebar">
+      @if(rights === "user"){
+        <nav class="menu">
+          <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+          <a routerLink="about" routerLinkActive="active">Team</a>
+          <a routerLink="about" routerLinkActive="active">Tactics</a>
+          <a routerLink="about" routerLinkActive="active">Fixtures</a>
+          <a routerLink="about" routerLinkActive="active">League</a>
+          <a routerLink="about" routerLinkActive="active">Cups</a>
+          <a routerLink="about" routerLinkActive="active">Continental</a>
+          <a routerLink="about" routerLinkActive="active">Transfers</a>
+          <a routerLink="contact" routerLinkActive="active">MATCH DAY</a>
+        </nav>
+      }
+      @else if(rights === "admin"){
+        <nav class="menu">
+          <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+          <a routerLink="about" routerLinkActive="active">Users</a>
+          <a routerLink="about" routerLinkActive="active">Tournaments</a>
+          <a routerLink="about" routerLinkActive="active">Teams</a>
+        </nav>
+      }
+    </aside>
+  }
+  <main class="page overlay flex-1 w-full">
+    <router-outlet></router-outlet>
+  </main>
+</div>

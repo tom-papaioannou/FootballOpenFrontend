@@ -1,0 +1,28 @@
+.mat-mdc-form-field {
+  --mdc-filled-text-field-container-color: transparent;
+  --mdc-filled-text-field-disabled-container-color: transparent;
+  --mdc-filled-text-field-hover-state-layer-color: transparent;
+  --mdc-filled-text-field-hover-state-layer-opacity: 0;
+  --mdc-filled-text-field-focus-state-layer-color: transparent;
+  --mdc-filled-text-field-focus-state-layer-opacity: 0;
+  --mat-form-field-state-layer-color: transparent;
+  --mdc-filled-text-field-active-indicator-height: 0;
+  --mdc-filled-text-field-focus-active-indicator-height: 0;
+  --mdc-filled-text-field-hover-active-indicator-color: transparent;
+}
+
+.mat-mdc-input-element {
+  color: var(--color-blue-500) !important;
+}
+
+:host ::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled {
+  background: rgba(255,255,255,.4) !important;
+  border-radius: 1rem;
+  box-shadow: inset 0 0 0 1px #fff;
+  padding: 4px 12px;
+}
+
+:host ::ng-deep .mat-mdc-form-field-line-ripple,
+:host ::ng-deep .mdc-line-ripple {
+  display: none !important;
+}

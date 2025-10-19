@@ -1,0 +1,19 @@
+<mat-toolbar>
+  <span class="brand">Football Open Game</span>
+
+  <span class="spacer"></span>
+  @if(signedIn){
+    <button mat-button [matMenuTriggerFor]="menu">
+      More
+      <mat-icon>expand_more</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="contact">Account</button>
+      <button mat-menu-item routerLink="contact">Contact</button>
+      <button mat-menu-item routerLink="help">Help</button>
+      <button mat-menu-item routerLink="help">Settings</button>
+      <button mat-menu-item (click)="logOut()">Sign Out</button>
+    </mat-menu>
+  }
+</mat-toolbar>

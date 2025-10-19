@@ -1,0 +1,60 @@
+.overlay {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  text-align: center;
+}
+
+:host, html, body {
+  height: 100%;
+}
+body { margin: 0; }
+
+app-navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+}
+
+.app-layout {
+  position: absolute;
+  top: 64px;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  grid-template-columns: 260px 1fr;
+  min-height: 0;
+}
+
+.sidebar {
+  border-right: 1px solid rgba(0,0,0,0.12);
+  padding: 16px;
+  overflow: auto;
+  background: rgba(255,255,255,0.9);
+  min-width: 156px;
+}
+
+.page {
+  padding: 16px;
+  overflow: auto;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.menu a {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: inherit;
+}
+.menu a.active {
+  background: rgba(0,0,0,0.06);
+}
+
+@media (max-width: 599px) {
+  .app-layout {
+    top: 56px;
+    grid-template-columns: 200px 1fr;
+  }
+}
