@@ -6,7 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavbarComponent } from './components/navbar/navbar';
-import { Authentication } from './services/authentication';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +30,10 @@ export class App {
   rights = localStorage.getItem("token");
   signedIn: boolean;
 
-  constructor(private readonly authService: Authentication, private readonly cdr: ChangeDetectorRef) {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.signedIn = this.rights ? true : false;
 
     this.authService.authenticationChange?.subscribe({

@@ -1,13 +1,15 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Authentication {
+export class AuthService {
   
   authenticationChange = new EventEmitter<any>();
 
+  isLoggedIn() : boolean  {
+    return localStorage.getItem("token") !== null;
+  }
 
   emitChange(){
     this.authenticationChange.emit();

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCard } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { ActionButton } from '../shared/buttons/action-button/action-button';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
 import { LinkButton } from '../shared/buttons/link-button/link-button';
-import { Authentication } from '../../services/authentication';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +31,7 @@ export class Login{
   constructor(
     private readonly fb: FormBuilder,
     private readonly router: Router,
-    private readonly authService: Authentication
+    private readonly authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       username: [''],
