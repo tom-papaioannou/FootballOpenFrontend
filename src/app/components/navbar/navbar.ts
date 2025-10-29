@@ -22,27 +22,37 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavbarComponent {
 
-  rights = localStorage.getItem("token");
-  signedIn: boolean;
+  role = localStorage.getItem("role");
+  loggedIn: boolean;
 
   constructor(
     private router: Router,
     private readonly authService: AuthService,
     private readonly cdr: ChangeDetectorRef
-  ){ 
-    this.signedIn = this.rights ? true : false;
+  ){
+    this.loggedIn = this.authService.isLoggedIn();
     this.authService.authenticationChange?.subscribe({
       next:() => {
-        this.rights = localStorage.getItem("token");
-        this.signedIn = this.rights ? true : false;
+        this.role = localStorage.getItem("role");
+        this.loggedIn = this.authService.isLoggedIn();
         this.cdr.detectChanges();
       }
     });
   }
 
+  testConnection(){
+    this.authService.testConnection().subscribe({
+      next: (result) => {
+        debugger;
+      },
+      error: (error) => {
+        debugger
+      }
+    });
+  }
+
   logOut(){
-    localStorage.removeItem("token");
+    this.authService.logOut();
     this.router.navigate(['/login']);
-    this.authService.emitChange();
   }
 }

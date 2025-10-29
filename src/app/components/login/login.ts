@@ -27,6 +27,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Login{
   loginForm: FormGroup;
+  role = "";
 
   constructor(
     private readonly fb: FormBuilder,
@@ -40,15 +41,19 @@ export class Login{
   }
 
   login(){
-    if(this.loginForm.value.username === "Tom"){
-      localStorage.setItem("token", "user");
-      this.router.navigate(['/home']);
-      this.authService.emitChange();
-    }
-    else if(this.loginForm.value.username === "Admin"){
-      localStorage.setItem("token", "admin");
-      this.router.navigate(['/home']);
-      this.authService.emitChange();
-    }
+    let data = {
+      username: this.loginForm.value.username,
+      password: this.loginForm.value.password
+    };
+    this.authService.login(data).subscribe({
+      next: (result) => {
+        this.authService.afterSuccessfullLogin(result);
+        this.role = this.authService.role;
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 }

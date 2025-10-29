@@ -3,7 +3,7 @@
 <div class="app-layout">
   @if(signedIn) {
     <aside class="sidebar">
-      @if(rights === "user"){
+      @if(role === "User"){
         <nav class="menu">
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="about" routerLinkActive="active">Team</a>
@@ -16,7 +16,7 @@
           <a routerLink="contact" routerLinkActive="active">MATCH DAY</a>
         </nav>
       }
-      @else if(rights === "admin"){
+      @else if(role === "Admin"){
         <nav class="menu">
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="about" routerLinkActive="active">Users</a>

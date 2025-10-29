@@ -27,19 +27,19 @@ import { AuthService } from './services/auth.service';
 export class App {
   protected readonly title = signal('FootballOpenFrontend');
 
-  rights = localStorage.getItem("token");
-  signedIn: boolean;
+  role = localStorage.getItem("role");
+  signedIn = localStorage.getItem("token") != null ? true : false;
 
   constructor(
     private readonly authService: AuthService,
     private readonly cdr: ChangeDetectorRef
   ) {
-    this.signedIn = this.rights ? true : false;
+    this.signedIn = this.role ? true : false;
 
     this.authService.authenticationChange?.subscribe({
       next:() => {
-        this.rights = localStorage.getItem("token");
-        this.signedIn = this.rights ? true : false;
+        this.role = localStorage.getItem("role");
+        this.signedIn = localStorage.getItem("token") != null ? true : false;
         this.cdr.detectChanges();
       }
     });
