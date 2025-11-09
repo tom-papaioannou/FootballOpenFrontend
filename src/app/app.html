@@ -16,6 +16,13 @@
           <a routerLink="contact" routerLinkActive="active">MATCH DAY</a>
         </nav>
       }
+      @else if(role === "Host"){
+        <nav class="menu">
+          <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+          <a routerLink="tournaments" routerLinkActive="active">Tournaments</a>
+          <a routerLink="about" routerLinkActive="active">Teams</a>
+        </nav>
+      }
       @else if(role === "Admin"){
         <nav class="menu">
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
