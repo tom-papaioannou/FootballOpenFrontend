@@ -1,0 +1,17 @@
+.players-theme {
+  --dt-header-bg: #283593;
+  --dt-header-color: white;
+  --dt-row-hover: #293266;
+  --dt-data-bg: rgba(0,0,0,0.5);
+  --dt-cell-color: white
+}
+
+.dark-theme {
+  --dt-header-bg: #222;
+  --dt-header-color: #eee;
+  --dt-row-hover: #333;
+}
+
+.compact {
+  --dt-row-hover: #f0f0f0;
+}

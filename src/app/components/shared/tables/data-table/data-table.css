@@ -1,0 +1,29 @@
+:host {
+  --dt-header-bg: #f5f5f5;
+  --dt-header-color: #333;
+  --dt-row-hover: #fafafa;
+}
+
+.app-table {
+  border-radius: 12px;
+  background: transparent;
+}
+
+.mat-mdc-header-cell {
+  background: var(--dt-header-bg);
+  color: var(--dt-header-color);
+}
+
+.mat-mdc-row:hover {
+  background: var(--dt-row-hover);
+  cursor: pointer;
+}
+
+.mat-mdc-cell {
+  color: var(--dt-cell-color);
+}
+
+.tableBorder {
+  border-color: var(--dt-data-bg);
+  background: var(--dt-data-bg);
+}

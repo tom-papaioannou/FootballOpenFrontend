@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { DataTable } from "../../shared/tables/data-table/data-table";
 
 @Component({
   selector: 'app-squad',
   imports: [
-    MatTableModule
-  ],
+    MatTableModule,
+    DataTable
+],
   templateUrl: './squad.html',
   styleUrl: './squad.css'
 })
