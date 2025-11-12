@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
 import { DataTable } from "../../shared/tables/data-table/data-table";
 
 @Component({
   selector: 'app-squad',
   imports: [
-    MatTableModule,
     DataTable
-],
+  ],
   templateUrl: './squad.html',
   styleUrl: './squad.css'
 })
 export class Squad {
-  displayedColumns: string[] = ['name', 'position', 'age'];
+  displayedColumns = [
+    { key: 'name', header: 'Name', width: '30%' },
+    { key: 'position', header: 'Position' },
+    { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
+  ];
   people = [
     { name: 'Alice Johnson', age: 25, position: "CF" },
     { name: 'Bob Brown', age: 32, position: "CD" },

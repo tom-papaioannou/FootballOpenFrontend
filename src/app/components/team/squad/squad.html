@@ -2,10 +2,6 @@
     <app-data-table
         [data]="people"
         class="players-theme"
-        [columns]="[
-            { key: 'name', header: 'Name', width: '30%' },
-            { key: 'position', header: 'Position' },
-            { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
-        ]">
+        [columns]="$any(displayedColumns)">
     </app-data-table>
 </div>

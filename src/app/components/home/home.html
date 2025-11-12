@@ -1,0 +1,15 @@
+<div class="flex w-full">
+    <div class="p-2 flex-1">
+        <app-data-table
+            [data]="people"
+            [columns]="$any(displayedColumns)">
+        </app-data-table>
+    </div>
+
+    <div class="p-2 w-1/6">
+        <app-data-table
+            [data]="fixtures"
+            [columns]="$any(displayedColumnsFixtures)">
+        </app-data-table>
+    </div>
+</div>

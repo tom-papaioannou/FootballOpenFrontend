@@ -1,17 +1,11 @@
-:host {
-  --dt-header-bg: #f5f5f5;
-  --dt-header-color: #333;
-  --dt-row-hover: #fafafa;
-}
-
 .app-table {
   border-radius: 12px;
   background: transparent;
 }
 
 .mat-mdc-header-cell {
-  background: var(--dt-header-bg);
-  color: var(--dt-header-color);
+  background: var(--dt-header-bg, #000);
+  color: var(--dt-header-color, white);
 }
 
 .mat-mdc-row:hover {
@@ -20,10 +14,10 @@
 }
 
 .mat-mdc-cell {
-  color: var(--dt-cell-color);
+  color: var(--dt-cell-color, white);
 }
 
 .tableBorder {
-  border-color: var(--dt-data-bg);
-  background: var(--dt-data-bg);
+  border-color: var(--dt-data-bg, black);
+  background: var(--dt-data-bg, rgba(0,0,0, 0.5));
 }
