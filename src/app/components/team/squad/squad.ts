@@ -11,7 +11,7 @@ import { DataTable } from "../../shared/tables/data-table/data-table";
 })
 export class Squad {
   displayedColumns = [
-    { key: 'name', header: 'Name', width: '30%' },
+    { key: 'name', header: 'Name', width: '30%', sortable: true },
     { key: 'position', header: 'Position' },
     { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
   ];

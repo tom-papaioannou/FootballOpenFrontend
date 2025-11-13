@@ -1,0 +1,37 @@
+@use '@angular/material' as mat;
+
+:host {
+  @include mat.sort-overrides((
+    arrow-color: var(--dt-sort-arrow-color, currentColor),
+  ));
+}
+
+.app-table {
+  border-radius: 12px;
+  background: transparent;
+}
+
+.mat-mdc-header-row{
+  background: var(--dt-header-bg, rgba(0,0,0,0.15));
+}
+
+.mat-mdc-header-cell {
+  background: transparent;
+  color: var(--dt-header-color, white);
+}
+
+.mat-mdc-row:hover {
+  background: var(--dt-row-hover);
+  cursor: pointer;
+}
+
+.mat-mdc-cell {
+  color: var(--dt-cell-color, white);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.tableBorder {
+  border-color: black;
+  background: var(--dt-data-bg, rgba(0,0,0,0.5));
+}

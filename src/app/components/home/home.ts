@@ -11,9 +11,9 @@ import { DataTable } from '../shared/tables/data-table/data-table';
 })
 export class Home {
   displayedColumnsFixtures = [
-    { key: 'date', header: 'Date', width: '15%' },
-    { key: 'homeaway', width: '5%' },
-    { key: 'team', header: 'Team', align: 'end', headerClass:'text-end', cellClass:'text-end' }
+    { key: 'date', header: 'Date', width: '15%', sortable: undefined },
+    { key: 'homeaway', width: '5%', sortable: false },
+    { key: 'team', header: 'Team', align: 'end', headerClass:'text-end', cellClass:'text-end', sortable: false }
   ];
   fixtures = [
     { date: '15/06', homeaway: 'H', team: "Red Ones" },

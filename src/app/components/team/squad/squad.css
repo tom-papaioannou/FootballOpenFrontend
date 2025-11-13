@@ -1,9 +1,7 @@
 .players-theme {
-  --dt-header-bg: #283593;
-  --dt-header-color: white;
-  --dt-row-hover: #171616;
-  --dt-data-bg: rgba(0,0,0,0.5);
-  --dt-cell-color: white
+  --dt-header-color: rgba(193, 193, 193, 1);
+  --dt-data-bg: rgba(0,0,0,0.35);
+  --dt-cell-color: white;
 }
 
 .dark-theme {
