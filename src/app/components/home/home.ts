@@ -25,6 +25,8 @@ import { TeamKit } from '../team-kit/team-kit';
 })
 export class Home implements OnDestroy {
   teamName: string = "";
+  managerID: string | null = null;
+  managerName: string = "-";
   kit: Kit | undefined;
   competitionName: string = "";
   competitionID: string | null = null;
@@ -60,16 +62,22 @@ export class Home implements OnDestroy {
     private readonly cdr: ChangeDetectorRef
   ){
     this.teamName = this.teamsService.CurrentTeam?.name ?? "Unknown Team";
+    this.managerID = this.teamsService.CurrentTeam?.managerID ?? null;
+    this.managerName = this.teamsService.CurrentTeam?.managerName ?? "-";
     this.updateStadiumInformation(this.teamsService.CurrentTeam);
     this.teamsService.currentTeamObservable
       .pipe(takeUntil(this.destroy$))
       .subscribe((team) => {
+        this.managerID = team.managerID ?? null;
+        this.managerName = team.managerName ?? "-";
         this.updateStadiumInformation(team);
         this.cdr.markForCheck();
       });
 
     this.teamsService.getCurrentTeamDashboard().subscribe((dashboard) => {
       this.teamName = dashboard.teamName;
+      this.managerID = dashboard.managerID ?? null;
+      this.managerName = dashboard.managerName ?? "-";
       this.competitionName = dashboard.competitionName;
       this.competitionID = dashboard.competitionID ?? null;
       this.kit = dashboard.kit;
@@ -98,6 +106,12 @@ export class Home implements OnDestroy {
 
   openFixtures(): void {
     this.router.navigate(['/team', 'fixtures']);
+  }
+
+  openManagerProfile(): void {
+    if (this.managerID) {
+      this.router.navigate(['/manager-profile', this.managerID]);
+    }
   }
 
   private updateStadiumInformation(team: Team | undefined): void {

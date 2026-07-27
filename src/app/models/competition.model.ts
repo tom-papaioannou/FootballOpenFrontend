@@ -106,6 +106,8 @@ export interface Team {
   name: string;
   leagueID?: string | null;
   leagueName?: string | null;
+  managerID?: string | null;
+  managerName?: string | null;
   isOwned?: boolean;
   stadium?: Stadium;
   kit: Kit;
