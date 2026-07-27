@@ -10,6 +10,16 @@
       <div class="flex-col flex-1 flex justify-center">
         <div class="flex flex-col justify-center items-center">
           <span class="font-bold text-lg">{{teamName}}</span>
+          <span class="dashboard-manager-name text-sm">
+            Manager -
+            <button
+              type="button"
+              class="dashboard-manager-link"
+              [disabled]="!managerID"
+              (click)="openManagerProfile()">
+              {{managerName}}
+            </button>
+          </span>
           <span class="text-sm">
             2nd in
             <button

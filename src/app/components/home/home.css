@@ -15,6 +15,32 @@
   max-height: min(42vw, 200px);
 }
 
+.dashboard-manager-name {
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.35;
+}
+
+.dashboard-manager-link {
+  background: transparent;
+  border: 0;
+  color: rgba(255, 255, 255, 0.86);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dashboard-manager-link:disabled {
+  cursor: default;
+  opacity: 0.7;
+  text-decoration: none;
+}
+
+.dashboard-manager-link:not(:disabled):hover {
+  color: #fff;
+}
+
 .dashboard-grid {
   align-items: stretch;
 }

@@ -56,6 +56,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/team/player-details/player-details').then(m => m.PlayerDetails)
     },
     {
+        path: 'manager-profile/:id',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/manager-profile/manager-profile').then(m => m.ManagerProfile)
+    },
+    {
         path: 'competitions',
         canActivate: [authenticationGuard],
         loadComponent: () => import('./components/world-map/world-map').then(m => m.WorldMap)
