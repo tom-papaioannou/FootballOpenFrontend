@@ -5,6 +5,7 @@
 
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   forwardRef,
@@ -75,7 +76,10 @@ export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnDest
   private blurRestoreTimer?: ReturnType<typeof setTimeout>;
   private selectionVersion = 0;
 
-  constructor(private readonly injector: Injector) {}
+  constructor(
+    private readonly injector: Injector,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     try {
@@ -259,6 +263,8 @@ export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnDest
   private openPanel(): void {
     queueMicrotask(() => {
       if (!this.disabled && this.autocompleteTrigger && document.activeElement === this.textInput?.nativeElement) {
+        this.cdr.detectChanges();
+        this.autocompleteTrigger.updatePosition();
         this.autocompleteTrigger.openPanel();
       }
     });
