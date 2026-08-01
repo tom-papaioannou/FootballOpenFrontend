@@ -31,9 +31,9 @@
     <!-- Left Side: Tactic Card -->
     <div class="tactic-section">
       <section class="xl:col-span-8">
-        <div class="bg-surface-container-low rounded-xl overflow-hidden relative aspect-[3/4] md:aspect-[10/16] border border-white/5 shadow-2xl w-full max-w-3xl min-h-[654px]">
+        <div class="bg-surface-container-low rounded-xl relative aspect-[3/4] md:aspect-[10/16] border border-white/5 shadow-2xl w-full max-w-3xl min-h-[654px]">
           <!-- Pitch Background -->
-          <div class="absolute inset-0 bg-primary-container pitch-grid" style="background-color: #254736;">
+          <div class="absolute inset-0 bg-primary-container pitch-grid rounded-xl overflow-hidden" style="background-color: #254736;">
             <img src="assets/images/tactics/SimpleBackground.png" alt="Tactics formation" class="h-full" />
           </div>
 
@@ -47,18 +47,28 @@
                   <div class="player-node-wrapper" [class.dragging-origin]="draggedPosition() === player.position">
                     <div cdkDrag
                          class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2"
+                         [cdkDragPreviewContainer]="'global'"
                          [attr.data-position]="player.position"
                          (cdkDragStarted)="onDragStarted($event, player)"
-                         (cdkDragMoved)="onDragMoved($event)"
+                         (cdkDragMoved)="onDragMoved($event, player)"
                          (cdkDragEnded)="onDragEnded($event, player)">
                       <div class="player-shirt"
                         [style.background-color]="getHomeShirtColor()"
                         [style.border-color]="getHomeShortsColor()">
                         {{ player.displayNumber }}
                       </div>
-                      <span class="player-node-name bg-surface-container-highest/80 backdrop-blur px-1.5 py-0.5 rounded font-label font-bold uppercase border border-white/5">
-                        {{ player.playerName }}
-                      </span>
+                      @if (player.personID) {
+                        <button type="button"
+                          class="player-node-name player-node-name-button bg-surface-container-highest/80 backdrop-blur px-1.5 py-0.5 rounded font-label font-bold uppercase border border-white/5"
+                          (click)="viewPitchPlayerProfile(player, $event)"
+                          [attr.aria-label]="'View profile for ' + player.playerName">
+                          {{ player.playerName }}
+                        </button>
+                      } @else {
+                        <span class="player-node-name bg-surface-container-highest/80 backdrop-blur px-1.5 py-0.5 rounded font-label font-bold uppercase border border-white/5">
+                          {{ player.playerName }}
+                        </span>
+                      }
                     </div>
                   </div>
                 }
@@ -76,7 +86,6 @@
           <div class="player-tactics-list rounded-xl border p-3">
             @if (mainTableData.length > 0) {
               <div class="player-list-header">
-                <span class="list-col-drag"></span>
                 <span class="list-col-pos">Pos</span>
                 <span class="list-col-role">Role</span>
                 <span class="list-col-suitability" title="Power for Position and Role">PPR</span>
@@ -84,12 +93,17 @@
                 <span class="list-col-trained-pos" title="Best Position">BP</span>
                 <span class="list-col-trained-role" title="Best Role">BR</span>
               </div>
-              <div cdkDropList [cdkDropListData]="mainTableData"
-                (cdkDropListDropped)="onTablePlayerDrop($event)"
+              <div cdkDropList
+                [cdkDropListData]="mainTableData"
+                [cdkDropListSortingDisabled]="true"
                 class="player-list-body">
                 @for (player of mainTableData; track player.playerTacticID) {
-                  <div cdkDrag class="player-list-row">
-                    <mat-icon cdkDragHandle class="list-col-drag drag-handle">drag_indicator</mat-icon>
+                  <div cdkDrag class="player-list-row"
+                    [cdkDragData]="player"
+                    [attr.data-player-tactic-id]="player.playerTacticID"
+                    (cdkDragStarted)="onTablePlayerDragStarted()"
+                    (cdkDragMoved)="onTablePlayerDragMoved($event, player)"
+                    (cdkDragEnded)="onTablePlayerDragEnded($event, player)">
                     <span class="list-col-pos">{{ player.position }}</span>
                     <select class="list-col-role role-select"
                       [ngModel]="player.roleValue"
@@ -106,14 +120,25 @@
                     <span class="list-col-suitability">{{ player.squadUnit === SquadUnit.Starting ? player.suitability : '' }}</span>
                     <button type="button"
                       class="list-col-name player-name-button"
-                      (click)="openPlayerPopup(player, $event)"
-                      (mousedown)="$event.stopPropagation()"
-                      (touchstart)="$event.stopPropagation()">
+                      (click)="openPlayerPopup(player, $event)">
                       {{ player.playerName }}
                     </button>
                     <span class="list-col-trained-pos">{{ player.bestTrainedPosition }}</span>
                     <span class="list-col-trained-role">{{ player.bestTrainedRole }}</span>
-                    <div class="player-list-placeholder" *cdkDragPlaceholder></div>
+                    <div class="player-list-row player-list-placeholder" *cdkDragPlaceholder>
+                      <span class="list-col-pos">{{ player.position }}</span>
+                      <select class="list-col-role role-select"
+                        [ngModel]="player.roleValue"
+                        disabled>
+                        @for (role of getPlayerRoleOptions(player.positionValue); track role.value) {
+                          <option [value]="role.value">{{ role.label }}</option>
+                        }
+                      </select>
+                      <span class="list-col-suitability">{{ player.squadUnit === SquadUnit.Starting ? player.suitability : '' }}</span>
+                      <span class="list-col-name">{{ player.playerName }}</span>
+                      <span class="list-col-trained-pos">{{ player.bestTrainedPosition }}</span>
+                      <span class="list-col-trained-role">{{ player.bestTrainedRole }}</span>
+                    </div>
                   </div>
                 }
               </div>
@@ -129,29 +154,36 @@
           <div class="player-tactics-list rounded-xl border p-3">
             @if (reserveTableData.length > 0) {
               <div class="player-list-header">
-                <span class="list-col-drag"></span>
                 <span class="list-col-pos">Pos</span>
                 <span class="list-col-name">Name</span>
                 <span class="list-col-trained-pos" title="Best Position">BP</span>
                 <span class="list-col-trained-role" title="Best Role">BR</span>
               </div>
-              <div cdkDropList [cdkDropListData]="reserveTableData"
-                (cdkDropListDropped)="onTablePlayerDrop($event)"
+              <div cdkDropList
+                [cdkDropListData]="reserveTableData"
+                [cdkDropListSortingDisabled]="true"
                 class="player-list-body">
                 @for (player of reserveTableData; track player.playerTacticID) {
-                  <div cdkDrag class="player-list-row">
-                    <mat-icon cdkDragHandle class="list-col-drag drag-handle">drag_indicator</mat-icon>
+                  <div cdkDrag class="player-list-row"
+                    [cdkDragData]="player"
+                    [attr.data-player-tactic-id]="player.playerTacticID"
+                    (cdkDragStarted)="onTablePlayerDragStarted()"
+                    (cdkDragMoved)="onTablePlayerDragMoved($event, player)"
+                    (cdkDragEnded)="onTablePlayerDragEnded($event, player)">
                     <span class="list-col-pos">{{ player.position }}</span>
                     <button type="button"
                       class="list-col-name player-name-button"
-                      (click)="openPlayerPopup(player, $event)"
-                      (mousedown)="$event.stopPropagation()"
-                      (touchstart)="$event.stopPropagation()">
+                      (click)="openPlayerPopup(player, $event)">
                       {{ player.playerName }}
                     </button>
                     <span class="list-col-trained-pos">{{ player.bestTrainedPosition }}</span>
                     <span class="list-col-trained-role">{{ player.bestTrainedRole }}</span>
-                    <div class="player-list-placeholder" *cdkDragPlaceholder></div>
+                    <div class="player-list-row player-list-placeholder" *cdkDragPlaceholder>
+                      <span class="list-col-pos">{{ player.position }}</span>
+                      <span class="list-col-name">{{ player.playerName }}</span>
+                      <span class="list-col-trained-pos">{{ player.bestTrainedPosition }}</span>
+                      <span class="list-col-trained-role">{{ player.bestTrainedRole }}</span>
+                    </div>
                   </div>
                 }
               </div>
@@ -171,7 +203,17 @@
   <div class="player-popup-backdrop" (click)="closePlayerPopup()">
     <section class="player-popup" role="dialog" aria-modal="true" [attr.aria-label]="'Tactics details for ' + player.playerName" (click)="$event.stopPropagation()">
       <div class="player-popup-header">
-        <h3>{{ player.playerName }}</h3>
+        <div class="player-popup-title">
+          <h3>{{ player.playerName }}</h3>
+          @if (player.person?.personID) {
+            <button type="button"
+              class="player-profile-link"
+              (click)="viewPlayerProfile(player, $event)"
+              [attr.aria-label]="'View profile for ' + player.playerName">
+              View Profile
+            </button>
+          }
+        </div>
         <button mat-icon-button type="button" (click)="closePlayerPopup()" aria-label="Close player details">
           <mat-icon>close</mat-icon>
         </button>

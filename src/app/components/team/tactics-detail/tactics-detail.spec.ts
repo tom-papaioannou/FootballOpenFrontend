@@ -16,6 +16,7 @@ describe('TacticsDetail', () => {
   let component: TacticsDetail;
   let fixture: ComponentFixture<TacticsDetail>;
   let tacticsService: jasmine.SpyObj<TacticsService>;
+  let router: jasmine.SpyObj<Router>;
 
   const baseTactic: Tactic = {
     tacticID: 'test-tactic-id',
@@ -27,8 +28,13 @@ describe('TacticsDetail', () => {
 
   beforeEach(async () => {
     tacticsService = jasmine.createSpyObj<TacticsService>('TacticsService', [
+      'getPlayerTactics',
+      'swapPlayerTactics',
       'updateTeamTactic'
     ]);
+    tacticsService.getPlayerTactics.and.returnValue(of([]));
+    tacticsService.swapPlayerTactics.and.returnValue(of(void 0));
+    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
       imports: [TacticsDetail],
@@ -45,7 +51,7 @@ describe('TacticsDetail', () => {
         },
         {
           provide: Router,
-          useValue: jasmine.createSpyObj<Router>('Router', ['navigate'])
+          useValue: router
         },
         {
           provide: TacticsService,
@@ -175,5 +181,185 @@ describe('TacticsDetail', () => {
 
     expect(player.position).toBe('LCM');
     expect(player.bestTrainedPosition).toBe('CM');
+  });
+
+  it('should navigate to the selected player profile', () => {
+    const player = {
+      playerName: 'J. Doe',
+      position: 'GK',
+      positionValue: PlayerPosition.Goalkeeper,
+      roleValue: PlayerRole.Goalkeeper,
+      suitability: 90,
+      bestTrainedPosition: 'GK',
+      bestTrainedRole: 'GK',
+      playerTacticID: 'player-tactic-1',
+      squadUnit: SquadUnit.Starting,
+      substituteOrder: Number.MAX_SAFE_INTEGER,
+      person: {
+        personID: 'person-1',
+        name: 'John',
+        surname: 'Doe'
+      }
+    };
+
+    component.selectedPlayer.set(player);
+
+    component.viewPlayerProfile(player);
+
+    expect(component.selectedPlayer()).toBeNull();
+    expect(router.navigate).toHaveBeenCalledOnceWith(['/player', 'person-1']);
+  });
+
+  it('should navigate to a pitch player profile', () => {
+    component.viewPitchPlayerProfile({
+      position: PlayerPosition.Goalkeeper,
+      positionLabel: 'GK',
+      playerName: 'J. Doe',
+      displayNumber: 1,
+      playerTacticID: 'player-tactic-1',
+      personID: 'person-1',
+      role: PlayerRole.Goalkeeper
+    });
+
+    expect(router.navigate).toHaveBeenCalledOnceWith(['/player', 'person-1']);
+  });
+
+  it('should swap a list player with the hovered pitch player when list drag ends', () => {
+    component.tacticId.set(baseTactic.tacticID!);
+    component.playerTactics.set([{
+      playerTacticID: 'gk-tactic',
+      tacticID: baseTactic.tacticID!,
+      playerPosition: PlayerPosition.Goalkeeper,
+      playerRole: PlayerRole.Goalkeeper,
+      squadUnit: SquadUnit.Starting,
+      person: {
+        personID: 'gk',
+        name: 'Test',
+        surname: 'Goalkeeper'
+      }
+    }]);
+
+    const hoveredNode = document.createElement('div');
+    hoveredNode.setAttribute('data-position', String(PlayerPosition.Goalkeeper));
+    (component as unknown as { hoveredElement: HTMLElement | null }).hoveredElement = hoveredNode;
+
+    const reset = jasmine.createSpy('reset');
+
+    component.onTablePlayerDragEnded({
+      source: { reset }
+    } as never, {
+      playerName: 'S. Player',
+      position: 'S1',
+      positionValue: PlayerPosition.CentralStriker,
+      roleValue: PlayerRole.AdvancedForward,
+      suitability: 70,
+      bestTrainedPosition: 'ST',
+      bestTrainedRole: 'AF',
+      playerTacticID: 'sub-tactic',
+      squadUnit: SquadUnit.Substitute,
+      substituteOrder: 1
+    });
+
+    expect(tacticsService.swapPlayerTactics).toHaveBeenCalledOnceWith('sub-tactic', 'gk-tactic');
+    expect(reset).toHaveBeenCalled();
+  });
+
+  it('should swap a list player with the hovered list row when list drag ends', () => {
+    component.tacticId.set(baseTactic.tacticID!);
+    component.playerTactics.set([{
+      playerTacticID: 'first-tactic',
+      tacticID: baseTactic.tacticID!,
+      playerPosition: PlayerPosition.CentralStriker,
+      playerRole: PlayerRole.AdvancedForward,
+      squadUnit: SquadUnit.Substitute,
+      substituteOrder: 1,
+      person: {
+        personID: 'first',
+        name: 'First',
+        surname: 'Player'
+      }
+    }, {
+      playerTacticID: 'second-tactic',
+      tacticID: baseTactic.tacticID!,
+      playerPosition: PlayerPosition.Goalkeeper,
+      playerRole: PlayerRole.Goalkeeper,
+      squadUnit: SquadUnit.Substitute,
+      substituteOrder: 2,
+      person: {
+        personID: 'second',
+        name: 'Second',
+        surname: 'Player'
+      }
+    }]);
+
+    const hoveredRow = document.createElement('div');
+    hoveredRow.setAttribute('data-player-tactic-id', 'second-tactic');
+    (component as unknown as { hoveredListRowElement: HTMLElement | null }).hoveredListRowElement = hoveredRow;
+
+    const reset = jasmine.createSpy('reset');
+
+    component.onTablePlayerDragEnded({
+      source: { reset }
+    } as never, component.mainTableData[0]);
+
+    expect(tacticsService.swapPlayerTactics).toHaveBeenCalledOnceWith('first-tactic', 'second-tactic');
+    expect(reset).toHaveBeenCalled();
+  });
+
+  it('should swap a pitch player with the hovered list row when pitch drag ends', () => {
+    component.tacticId.set(baseTactic.tacticID!);
+    component.playerTactics.set([{
+      playerTacticID: 'pitch-tactic',
+      tacticID: baseTactic.tacticID!,
+      playerPosition: PlayerPosition.Goalkeeper,
+      playerRole: PlayerRole.Goalkeeper,
+      squadUnit: SquadUnit.Starting,
+      person: {
+        personID: 'pitch',
+        name: 'Pitch',
+        surname: 'Player'
+      }
+    }, {
+      playerTacticID: 'row-tactic',
+      tacticID: baseTactic.tacticID!,
+      playerPosition: PlayerPosition.CentralStriker,
+      playerRole: PlayerRole.AdvancedForward,
+      squadUnit: SquadUnit.Substitute,
+      substituteOrder: 1,
+      person: {
+        personID: 'row',
+        name: 'Row',
+        surname: 'Player'
+      }
+    }]);
+
+    const hoveredRow = document.createElement('div');
+    hoveredRow.setAttribute('data-player-tactic-id', 'row-tactic');
+    (component as unknown as { hoveredListRowElement: HTMLElement | null }).hoveredListRowElement = hoveredRow;
+
+    const reset = jasmine.createSpy('reset');
+
+    component.onDragEnded({
+      source: { reset }
+    } as never, {
+      position: PlayerPosition.Goalkeeper,
+      positionLabel: 'GK',
+      playerName: 'P. Player',
+      displayNumber: 1,
+      playerTacticID: 'pitch-tactic',
+      role: PlayerRole.Goalkeeper
+    });
+
+    expect(tacticsService.swapPlayerTactics).toHaveBeenCalledOnceWith('pitch-tactic', 'row-tactic');
+    expect(reset).toHaveBeenCalled();
+    expect(component.draggedPosition()).toBeNull();
+  });
+
+  it('should not call the swap endpoint when dropping a player on itself', () => {
+    tacticsService.swapPlayerTactics.calls.reset();
+
+    component.onPlayerSwap({ playerTacticID: 'same-player' }, { playerTacticID: 'same-player' });
+
+    expect(tacticsService.swapPlayerTactics).not.toHaveBeenCalled();
   });
 });
