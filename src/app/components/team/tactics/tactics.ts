@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Card } from '../../shared/cards/card/card';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, CreateTacticRequest, Formation, PassingMentality, TacticMentality } from '../../../models/tactic.model';
@@ -16,11 +17,30 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
 import { Person, PlayerPosition } from '../../../models/player-enums.model';
+import { TeamTacticPriority, TeamTacticPriorityType } from '../../../models/team-tactic-priority.model';
 import { getPositionPitchRow } from '../../../utils/position-utils';
 
 interface FormationPreviewRow {
   rowIndex: number;
   positions: PlayerPosition[];
+}
+
+type PriorityTabID = 'captain' | 'penalty' | 'freeKick' | 'corner' | 'throwIn';
+
+interface PriorityTab {
+  id: PriorityTabID;
+  label: string;
+}
+
+interface PriorityListConfig {
+  key: string;
+  label: string;
+  type: TeamTacticPriorityType;
+}
+
+interface PriorityPlayerItem {
+  personID: string;
+  label: string;
 }
 
 @Component({
@@ -30,7 +50,9 @@ interface FormationPreviewRow {
     ReactiveFormsModule,
     Card,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    CdkDropList,
+    CdkDrag
   ],
   templateUrl: './tactics.html',
   styleUrl: './tactics.css',
@@ -48,6 +70,10 @@ export class Tactics implements OnInit {
   deleteConfirmationTactic = signal<Tactic | null>(null);
   teamKit = signal<Kit | null>(null);
   teamPlayers = signal<Person[]>([]);
+  tacticPriorities = signal<TeamTacticPriority[]>([]);
+  priorityLoading = signal(false);
+  activePriorityTab = signal<PriorityTabID>('captain');
+  openAddListKey = signal<string | null>(null);
 
   // Form
   tacticForm: FormGroup;
@@ -94,6 +120,35 @@ export class Tactics implements OnInit {
     { value: PassingMentality.Long, label: 'Long' }
   ];
 
+  readonly priorityTabs: PriorityTab[] = [
+    { id: 'captain', label: 'Captain' },
+    { id: 'penalty', label: 'Penalty' },
+    { id: 'freeKick', label: 'Free Kick' },
+    { id: 'corner', label: 'Corner' },
+    { id: 'throwIn', label: 'Throw In' }
+  ];
+
+  private readonly priorityListsByTab: Record<PriorityTabID, PriorityListConfig[]> = {
+    captain: [
+      { key: 'captain', label: 'Captain', type: TeamTacticPriorityType.Captain }
+    ],
+    penalty: [
+      { key: 'penalty', label: 'Penalty', type: TeamTacticPriorityType.Penalty }
+    ],
+    freeKick: [
+      { key: 'right-free-kick', label: 'Right', type: TeamTacticPriorityType.RightFreeKick },
+      { key: 'left-free-kick', label: 'Left', type: TeamTacticPriorityType.LeftFreeKick }
+    ],
+    corner: [
+      { key: 'right-corner', label: 'Right', type: TeamTacticPriorityType.RightCornerKick },
+      { key: 'left-corner', label: 'Left', type: TeamTacticPriorityType.LeftCornerKick }
+    ],
+    throwIn: [
+      { key: 'right-throw-in', label: 'Right', type: TeamTacticPriorityType.RightThrowIn },
+      { key: 'left-throw-in', label: 'Left', type: TeamTacticPriorityType.LeftThrowIn }
+    ]
+  };
+
   // Computed values
   canCreateNewTactic = computed(() => this.tactics().length < this.MAX_TACTICS);
   tacticsRemaining = computed(() => this.MAX_TACTICS - this.tactics().length);
@@ -120,13 +175,7 @@ export class Tactics implements OnInit {
       isMain: [false],
       Formation: [Formation.None, [Validators.required]],
       TacticMentality: [TacticMentality.Balanced, [Validators.required]],
-      PassingMentality: [PassingMentality.Balanced, [Validators.required]],
-      CaptainID: [null],
-      PenaltyTakerID: [null],
-      LeftCornerTakerID: [null],
-      RightCornerTakerID: [null],
-      LeftFreeKickTakerID: [null],
-      RightFreeKickTakerID: [null]
+      PassingMentality: [PassingMentality.Balanced, [Validators.required]]
     });
   }
 
@@ -143,6 +192,7 @@ export class Tactics implements OnInit {
           if (team?.teamID) {
             this.loadTactics();
             this.loadTeamPlayers(team.teamID);
+            this.loadTacticPriorities(team.teamID);
           }
         }
       });
@@ -203,13 +253,7 @@ export class Tactics implements OnInit {
       isMain: formValue.isMain ?? false,
       Formation: formValue.Formation,
       TacticMentality: formValue.TacticMentality,
-      PassingMentality: formValue.PassingMentality,
-      CaptainID: formValue.CaptainID || null,
-      PenaltyTakerID: formValue.PenaltyTakerID || null,
-      LeftCornerTakerID: formValue.LeftCornerTakerID || null,
-      RightCornerTakerID: formValue.RightCornerTakerID || null,
-      LeftFreeKickTakerID: formValue.LeftFreeKickTakerID || null,
-      RightFreeKickTakerID: formValue.RightFreeKickTakerID || null
+      PassingMentality: formValue.PassingMentality
     };
 
     this.tacticsService.createTeamTactic(createRequest)
@@ -249,9 +293,79 @@ export class Tactics implements OnInit {
     this.tacticForm.patchValue({ isMain: !this.tacticForm.get('isMain')?.value });
   }
 
+  selectPriorityTab(tabID: PriorityTabID): void {
+    this.activePriorityTab.set(tabID);
+    this.openAddListKey.set(null);
+  }
+
+  getActivePriorityLists(): PriorityListConfig[] {
+    return this.priorityListsByTab[this.activePriorityTab()];
+  }
+
+  getPriorityItems(type: TeamTacticPriorityType): PriorityPlayerItem[] {
+    const playersByID = new Map(this.teamPlayers().map(player => [player.personID, player]));
+
+    return this.tacticPriorities()
+      .filter(priority => priority.type === type)
+      .sort((a, b) => a.priority - b.priority)
+      .map(priority => {
+        const player = playersByID.get(priority.personID);
+
+        return {
+          personID: priority.personID,
+          label: player ? this.getPlayerFullName(player) : 'Unknown Player'
+        };
+      });
+  }
+
+  getAvailablePriorityPlayers(type: TeamTacticPriorityType): Person[] {
+    const assignedPlayerIDs = new Set(this.getPriorityItems(type).map(item => item.personID));
+
+    return this.teamPlayers()
+      .filter(player => !assignedPlayerIDs.has(player.personID))
+      .sort((a, b) => this.getPlayerFullName(a).localeCompare(this.getPlayerFullName(b)));
+  }
+
+  toggleAddPlayers(listKey: string): void {
+    this.openAddListKey.set(this.openAddListKey() === listKey ? null : listKey);
+  }
+
+  addPriorityPlayer(type: TeamTacticPriorityType, personID: string): void {
+    const nextPersonIDs = [...this.getPriorityItems(type).map(item => item.personID), personID];
+    this.savePriorityList(type, nextPersonIDs);
+    this.openAddListKey.set(null);
+  }
+
+  removePriorityPlayer(type: TeamTacticPriorityType, personID: string): void {
+    const nextPersonIDs = this.getPriorityItems(type)
+      .map(item => item.personID)
+      .filter(id => id !== personID);
+
+    this.savePriorityList(type, nextPersonIDs);
+  }
+
+  dropPriorityPlayer(type: TeamTacticPriorityType, event: CdkDragDrop<PriorityPlayerItem[]>): void {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    const nextItems = [...event.container.data];
+    moveItemInArray(nextItems, event.previousIndex, event.currentIndex);
+    this.savePriorityList(type, nextItems.map(item => item.personID));
+  }
+
   getPlayerFullName(player: Person): string {
-    const fullName = `${player.name ?? ''} ${player.surname ?? ''}`.trim();
-    return fullName || 'Unknown Player';
+    return `${player.name ?? ''} ${player.surname ?? ''}`.trim() || 'Unknown Player';
+  }
+
+  private getDefaultCreateFormValue(name: string): Record<string, unknown> {
+    return {
+      Name: name,
+      isMain: false,
+      Formation: Formation.Four_Four_Two,
+      TacticMentality: TacticMentality.Balanced,
+      PassingMentality: PassingMentality.Balanced
+    };
   }
 
   private loadTeamPlayers(teamID: string): void {
@@ -269,20 +383,63 @@ export class Tactics implements OnInit {
       });
   }
 
-  private getDefaultCreateFormValue(name: string): Record<string, unknown> {
-    return {
-      Name: name,
-      isMain: false,
-      Formation: Formation.Four_Four_Two,
-      TacticMentality: TacticMentality.Balanced,
-      PassingMentality: PassingMentality.Balanced,
-      CaptainID: null,
-      PenaltyTakerID: null,
-      LeftCornerTakerID: null,
-      RightCornerTakerID: null,
-      LeftFreeKickTakerID: null,
-      RightFreeKickTakerID: null
-    };
+  private loadTacticPriorities(teamID: string): void {
+    this.priorityLoading.set(true);
+
+    this.teamsService.getTeamTacticPriorities(teamID)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (priorities) => {
+          this.tacticPriorities.set(priorities);
+          this.priorityLoading.set(false);
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to load tactic priorities');
+          this.priorityLoading.set(false);
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  private savePriorityList(type: TeamTacticPriorityType, personIDs: string[]): void {
+    const teamID = this.teamsService.CurrentTeam?.teamID;
+
+    if (!teamID) {
+      this.error.set('Cannot save priorities: missing team information.');
+      return;
+    }
+
+    this.priorityLoading.set(true);
+    this.error.set(null);
+
+    this.teamsService.updateTeamTacticPriorities(teamID, type, personIDs)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.replacePriorityList(type, personIDs);
+          this.priorityLoading.set(false);
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to save tactic priorities');
+          this.priorityLoading.set(false);
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  private replacePriorityList(type: TeamTacticPriorityType, personIDs: string[]): void {
+    const teamTacticPriorityIDPrefix = `local-${type}`;
+    const otherPriorities = this.tacticPriorities().filter(priority => priority.type !== type);
+    const nextPriorities = personIDs.map((personID, index) => ({
+      teamTacticPriorityID: `${teamTacticPriorityIDPrefix}-${personID}`,
+      personID,
+      type,
+      priority: index + 1
+    }));
+
+    this.tacticPriorities.set([...otherPriorities, ...nextPriorities]);
   }
 
   openDeletePopup(tactic: Tactic, event: Event): void {

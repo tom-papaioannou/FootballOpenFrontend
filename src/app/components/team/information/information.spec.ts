@@ -17,9 +17,18 @@ describe('Information', () => {
   const mockTeam: Team = {
     teamID: 'team-1',
     name: 'Blue Team',
-    country: 'Greece',
-    stadium: 'Blue Arena',
-    foundedYear: 1926
+    stadium: {
+      name: 'Blue Arena',
+      latitude: 0,
+      longitude: 0,
+      capacity: 25000
+    },
+    kit: {
+      homeShirtColor: '#1f6feb',
+      homeShortsColor: '#ffffff',
+      awayShirtColor: '#ffffff',
+      awayShortsColor: '#1f6feb'
+    }
   };
 
   beforeEach(async () => {

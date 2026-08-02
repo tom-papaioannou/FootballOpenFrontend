@@ -78,12 +78,6 @@ export interface Tactic {
   formation?: Formation;
   tacticMentality?: TacticMentality;
   passingMentality?: PassingMentality;
-  captainID?: string | null;
-  penaltyTakerID?: string | null;
-  leftCornerTakerID?: string | null;
-  rightCornerTakerID?: string | null;
-  leftFreeKickTakerID?: string | null;
-  rightFreeKickTakerID?: string | null;
 }
 
 /**
@@ -97,16 +91,10 @@ export interface CreateTacticRequest {
   Formation?: Formation;
   TacticMentality?: TacticMentality;
   PassingMentality?: PassingMentality;
-  CaptainID?: string | null;
-  PenaltyTakerID?: string | null;
-  LeftCornerTakerID?: string | null;
-  RightCornerTakerID?: string | null;
-  LeftFreeKickTakerID?: string | null;
-  RightFreeKickTakerID?: string | null;
 }
 
 /**
- * DTO for updating tactic details and set-piece assignments
+ * DTO for updating tactic details
  */
 export interface UpdateTacticRequest {
   name: string;
@@ -114,12 +102,6 @@ export interface UpdateTacticRequest {
   formation: Formation;
   tacticMentality: TacticMentality;
   passingMentality: PassingMentality;
-  captainID?: string | null;
-  penaltyTakerID?: string | null;
-  leftCornerTakerID?: string | null;
-  rightCornerTakerID?: string | null;
-  leftFreeKickTakerID?: string | null;
-  rightFreeKickTakerID?: string | null;
 }
 
 /**

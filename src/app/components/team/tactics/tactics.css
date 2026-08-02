@@ -7,25 +7,19 @@
 .tactics-container {
   width: 100%;
   min-height: calc(100vh - 1rem);
-  margin: 0;
   --tactics-accent-color: #3b82f6;
-  --tactics-card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --tactics-add-card-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --tactics-card-hover-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
 .tactics-page-card {
   display: block;
-  width: 100%;
-  min-height: calc(100vh - 1rem);
+  height: calc(100vh - 1rem);
 }
 
 .tactics-page-card ::ng-deep .cardBorder,
 .tactics-page-card ::ng-deep .app-card {
-  min-height: calc(100vh - 1rem);
-}
-
-.space-y-4 > * + * {
-  margin-top: 1rem;
+  height: calc(100vh - 1rem);
+  overflow: hidden;
 }
 
 .tactic-card {
@@ -36,20 +30,192 @@
   --card-outline-color: rgba(255, 255, 255, 0.22);
 }
 
-.tactics-header {
-  text-align: left;
+.tactics-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(440px, 560px);
+  gap: 1.5rem;
+  align-items: start;
+  height: calc(100vh - 7rem);
+  min-height: 0;
+  overflow: hidden;
 }
 
-/* Cards Grid Layout */
+.tactics-list-pane {
+  min-height: 0;
+  overflow: auto;
+}
+
 .tactics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
   margin-top: 1.5rem;
-  justify-content: start;
 }
 
-/* Tactic Card Styles */
+.priority-pane {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 1.5rem);
+  min-height: 0;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.priority-tab,
+.priority-add-menu,
+.priority-player-row {
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.priority-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.priority-tab {
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 8px 4px;
+}
+
+.priority-tab.active {
+  border-color: rgba(59, 130, 246, 0.85);
+  background: rgba(59, 130, 246, 0.22);
+}
+
+.priority-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.priority-list-block {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.two .priority-list-block {
+  flex-basis: 0;
+  max-height: 50%;
+}
+
+.priority-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 36px;
+}
+
+.priority-list-header h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.priority-add-menu {
+  display: grid;
+  gap: 4px;
+  max-height: 220px;
+  margin: 6px 0 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.priority-add-menu button {
+  width: 100%;
+  min-height: 32px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  padding: 7px 8px;
+  text-align: left;
+}
+
+.priority-add-menu button:hover,
+.priority-add-menu button:focus-visible {
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.priority-empty-option,
+.priority-empty-list {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.priority-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.priority-player-row {
+  display: grid;
+  grid-template-columns: 22px 30px minmax(0, 1fr) 30px;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 6px;
+  min-height: 42px;
+  border-radius: 8px;
+  padding: 5px 6px;
+}
+
+.priority-drag-handle {
+  color: #94a3b8;
+  cursor: grab;
+}
+
+.priority-number {
+  text-align: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 24px;
+}
+
+.priority-player-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.priority-empty-list {
+  min-height: 42px;
+  border: 1px dashed rgba(255, 255, 255, 0.32);
+  border-radius: 8px;
+  padding: 10px;
+}
+
 .tactic-card {
   min-height: 360px;
   max-height: 360px;
@@ -63,12 +229,10 @@
   max-height: 360px;
 }
 
-/* Main Tactic Card with Blue Border */
 .tactic-card.main-tactic {
   --card-outline-color: var(--tactics-accent-color);
 }
 
-/* Delete Button */
 .delete-button {
   position: absolute;
   top: 8px;
@@ -84,7 +248,6 @@
   z-index: 10;
   background-color: rgba(255, 255, 255, 0.88);
   color: #475569;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
 }
 
 .tactic-card:hover .delete-button,
@@ -306,6 +469,10 @@
   width: min(760px, 100%);
 }
 
+.tactic-create-popup .tactic-edit-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .tactic-delete-popup {
   width: min(420px, 100%);
 }
@@ -369,10 +536,6 @@
   color: #facc15;
 }
 
-.tactic-main-button:disabled {
-  opacity: 0.75;
-}
-
 .tactic-edit-actions {
   display: flex;
   justify-content: flex-end;
@@ -391,6 +554,18 @@
 }
 
 @media (max-width: 480px) {
+  .tactics-content {
+    grid-template-columns: 1fr;
+  }
+
+  .priority-pane {
+    margin-top: 0;
+  }
+
+  .priority-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .tactic-edit-grid {
     grid-template-columns: 1fr;
     gap: 0;

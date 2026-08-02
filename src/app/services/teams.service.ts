@@ -9,6 +9,12 @@ import { environment } from '../../environments/environment.development';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Team } from '../models/competition.model';
 import { Person } from '../models/player-enums.model';
+import {
+  TeamTacticPriority,
+  TeamTacticPriorityType,
+  UpdatePrimaryTeamTacticPriorityRequest,
+  UpdateTeamTacticPrioritiesRequest
+} from '../models/team-tactic-priority.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +59,33 @@ export class TeamsService {
       personID,
       shirtNumber
     });
+  }
+
+  getTeamTacticPriorities(teamID: string): Observable<TeamTacticPriority[]> {
+    return this.http.get<TeamTacticPriority[]>(`${environment.apiUrl}/api/teams/${teamID}/tactic-priorities`);
+  }
+
+  updateTeamTacticPriorities(
+    teamID: string,
+    type: TeamTacticPriorityType,
+    personIDs: string[]
+  ): Observable<void> {
+    const request: UpdateTeamTacticPrioritiesRequest = { type, personIDs };
+
+    return this.http.put<void>(`${environment.apiUrl}/api/teams/${teamID}/tactic-priorities`, request);
+  }
+
+  updatePrimaryTeamTacticPriority(
+    teamID: string,
+    type: TeamTacticPriorityType,
+    personID: string
+  ): Observable<void> {
+    const request: UpdatePrimaryTeamTacticPriorityRequest = { personID };
+
+    return this.http.patch<void>(
+      `${environment.apiUrl}/api/teams/${teamID}/tactic-priorities/${type}/primary`,
+      request
+    );
   }
 
   getPlayerDetails(playerID: string): Observable<any> {
