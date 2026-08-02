@@ -43,6 +43,28 @@ describe('Tactics', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should expose the requested formations in the create dropdown options', () => {
+    const labels = component.formationOptions.map(option => option.label);
+
+    expect(labels).toEqual(jasmine.arrayContaining([
+      '5-4-1',
+      '4-6-0',
+      '4-4-2-Diamond',
+      '4-4-1-1',
+      '4-3-2-1',
+      '4-3-1-2',
+      '4-2-3-1',
+      '4-2-2-2',
+      '4-1-4-1',
+      '4-1-3-2',
+      '4-1-2-1-2',
+      '3-6-1',
+      '3-4-3',
+      '3-3-2-2',
+      '3-2-3-2'
+    ]));
+  });
+
   describe('Delete button visibility', () => {
     it('should not show delete button when there is only one tactic', () => {
       // Arrange: Set up component with one tactic

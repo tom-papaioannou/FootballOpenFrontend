@@ -17,6 +17,7 @@ import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
 import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 import { Card } from '../../shared/cards/card/card';
+import { FORMATION_OPTIONS } from '../../../utils/formation-utils';
 import {
   getGroupedPlayerPositionLabel,
   getPlayerPositionLabel,
@@ -255,12 +256,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
   selectedPlayer = signal<PlayerTacticTableRow | null>(null);
 
   formationOptions = [
-    { value: Formation.Four_Four_Two, label: '4-4-2' },
-    { value: Formation.Four_Three_Three, label: '4-3-3' },
-    { value: Formation.Three_Five_Two, label: '3-5-2' },
-    { value: Formation.Five_Three_Two, label: '5-3-2' },
-    { value: Formation.Four_Five_One, label: '4-5-1' }
-  ];
+    ...FORMATION_OPTIONS
+  ].sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
 
   tacticMentalityOptions = [
     { value: TacticMentality.ExtremelyDefending, label: 'Extremely Defending' },
@@ -284,6 +281,16 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   /** Swap pairs currently in flight, used to ignore duplicate CDK drop/end emissions. */
   private activeSwapKeys = new Set<string>();
+
+  private readonly pitchRowIndexes = [5, 4, 3, 2, 1, 0];
+  private readonly pitchRowTopPercentages: Record<number, number> = {
+    5: 18,
+    4: 34,
+    3: 50,
+    2: 62,
+    1: 76.5,
+    0: 91
+  };
 
   /**
    * Computed signal that groups playerTactics into pitch rows for the visual layout.
@@ -322,21 +329,16 @@ export class TacticsDetail implements OnInit, OnDestroy {
       rowMap.get(row)!.push(player);
     }
 
-    // Sort players within each row: descending position enum value = left to right
-    const rows: PitchRow[] = [];
-    for (const [rowIndex, players] of rowMap) {
+    return this.pitchRowIndexes.map(rowIndex => {
+      const players = rowMap.get(rowIndex) ?? [];
       players.sort((a, b) => b.position - a.position);
-      rows.push({
+
+      return {
         rowIndex,
         players,
         isGoalkeeper: rowIndex === 0
-      });
-    }
-
-    // Sort rows: highest row index first (strikers at top, GK at bottom)
-    rows.sort((a, b) => b.rowIndex - a.rowIndex);
-
-    return rows;
+      };
+    });
   });
 
   constructor(
@@ -416,9 +418,37 @@ export class TacticsDetail implements OnInit, OnDestroy {
    */
   getRowClasses(row: PitchRow): string {
     if (row.isGoalkeeper) {
-      return 'justify-center h-1/8';
+      return 'justify-center';
+    }
+    if (this.isWidePairRow(row)) {
+      return 'justify-between';
     }
     return row.players.length <= 2 ? 'justify-center gap-10' : 'justify-around';
+  }
+
+  getPitchRowTop(row: PitchRow): number {
+    return this.pitchRowTopPercentages[row.rowIndex] ?? 50;
+  }
+
+  private isWidePairRow(row: PitchRow): boolean {
+    if (row.players.length !== 2) {
+      return false;
+    }
+
+    const positions = new Set(row.players.map(player => player.position));
+    return (
+      this.hasPositionPair(positions, PlayerPosition.RightWingBack, PlayerPosition.LeftWingBack) ||
+      this.hasPositionPair(positions, PlayerPosition.RightMidfielder, PlayerPosition.LeftMidfielder) ||
+      this.hasPositionPair(positions, PlayerPosition.RightWinger, PlayerPosition.LeftWinger)
+    );
+  }
+
+  private hasPositionPair(
+    positions: Set<number>,
+    rightPosition: PlayerPosition,
+    leftPosition: PlayerPosition
+  ): boolean {
+    return positions.has(rightPosition) && positions.has(leftPosition);
   }
 
   goBack(): void {
