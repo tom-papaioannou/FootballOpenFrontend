@@ -85,7 +85,6 @@ describe('TacticsDetail', () => {
 
     component.tactic.set(baseTactic);
     component.tacticId.set(baseTactic.tacticID!);
-    component.editPopupOpen.set(true);
     component.selectedPlayer.set({
       playerName: 'J. Doe',
       position: 'GK',
@@ -112,7 +111,6 @@ describe('TacticsDetail', () => {
 
     expect(component.loadTacticDetails).toHaveBeenCalledOnceWith(baseTactic.tacticID!);
     expect(component.selectedPlayer()).toBeNull();
-    expect(component.editPopupOpen()).toBeFalse();
     expect(component.editSaving()).toBeFalse();
   });
 

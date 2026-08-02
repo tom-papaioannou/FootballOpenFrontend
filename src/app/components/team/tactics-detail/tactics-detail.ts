@@ -234,7 +234,6 @@ export class TacticsDetail implements OnInit, OnDestroy {
   editSaving = signal(false);
   error = signal<string | null>(null);
   tacticId = signal<string | null>(null);
-  editPopupOpen = signal(false);
   editModel = signal<TacticEditModel>({
     name: '',
     isMain: false,
@@ -399,6 +398,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
           }
           
           this.tactic.set(tactic);
+          this.resetTacticEditModel(tactic);
           this.playerTactics.set(playerTactics);
           this.loading.set(false);
           this.cdr.markForCheck();
@@ -423,30 +423,6 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   goBack(): void {
     this.router.navigate(['/team/tactics']);
-  }
-
-  openEditPopup(): void {
-    const tactic = this.tactic();
-    if (!tactic) {
-      return;
-    }
-
-    this.editModel.set({
-      name: tactic.name,
-      isMain: tactic.isMain,
-      formation: tactic.formation ?? Formation.Four_Four_Two,
-      tacticMentality: tactic.tacticMentality ?? TacticMentality.Balanced,
-      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced
-    });
-    this.editPopupOpen.set(true);
-  }
-
-  closeEditPopup(): void {
-    if (this.editSaving()) {
-      return;
-    }
-
-    this.editPopupOpen.set(false);
   }
 
   saveTacticEdit(): void {
@@ -482,7 +458,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       .subscribe({
         next: (updatedTactic) => {
           this.tactic.set(updatedTactic);
-          this.editPopupOpen.set(false);
+          this.resetTacticEditModel(updatedTactic);
           this.editSaving.set(false);
 
           const nextFormation = updatedTactic.formation ?? previousFormation;
@@ -501,6 +477,16 @@ export class TacticsDetail implements OnInit, OnDestroy {
           this.cdr.markForCheck();
         }
       });
+  }
+
+  private resetTacticEditModel(tactic: Tactic): void {
+    this.editModel.set({
+      name: tactic.name,
+      isMain: tactic.isMain,
+      formation: tactic.formation ?? Formation.Four_Four_Two,
+      tacticMentality: tactic.tacticMentality ?? TacticMentality.Balanced,
+      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced
+    });
   }
 
   getHomeShirtColor(): string {
