@@ -188,6 +188,14 @@ export class ManagerProfile implements OnInit, OnDestroy {
         return '4-4-1-1';
       case Formation.Four_Two_Two_Two:
         return '4-2-2-2';
+      case Formation.Four_Four_Two_Diamond:
+        return '4-4-2-Diamond';
+      case Formation.Four_Three_One_Two:
+        return '4-3-1-2';
+      case Formation.Four_One_Three_Two:
+        return '4-1-3-2';
+      case Formation.Four_One_Two_One_Two:
+        return '4-1-2-1-2';
       case Formation.Three_Four_Three:
         return '3-4-3';
       case Formation.Three_Four_Two_One:
@@ -196,6 +204,12 @@ export class ManagerProfile implements OnInit, OnDestroy {
         return '3-4-1-2';
       case Formation.Three_Three_Four:
         return '3-3-4';
+      case Formation.Three_Six_One:
+        return '3-6-1';
+      case Formation.Three_Three_Two_Two:
+        return '3-3-2-2';
+      case Formation.Three_Two_Three_Two:
+        return '3-2-3-2';
       case Formation.Five_Four_One:
         return '5-4-1';
       case Formation.Five_Two_Three:
@@ -352,9 +366,9 @@ export class ManagerProfile implements OnInit, OnDestroy {
           PlayerPosition.RightCenterMidfielder,
           PlayerPosition.CentralCenterMidfielder,
           PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.RightWinger,
+          PlayerPosition.RightStriker,
           PlayerPosition.CentralStriker,
-          PlayerPosition.LeftWinger
+          PlayerPosition.LeftStriker
         ];
       case Formation.Three_Five_Two:
         return [
@@ -362,11 +376,11 @@ export class ManagerProfile implements OnInit, OnDestroy {
           PlayerPosition.RightCenterBack,
           PlayerPosition.CentralCenterBack,
           PlayerPosition.LeftCenterBack,
-          PlayerPosition.RightWingBack,
+          PlayerPosition.RightMidfielder,
           PlayerPosition.RightCenterMidfielder,
           PlayerPosition.CentralCenterMidfielder,
           PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.LeftWingBack,
+          PlayerPosition.LeftMidfielder,
           PlayerPosition.RightStriker,
           PlayerPosition.LeftStriker
         ];
@@ -468,6 +482,62 @@ export class ManagerProfile implements OnInit, OnDestroy {
           PlayerPosition.RightStriker,
           PlayerPosition.LeftStriker
         ];
+      case Formation.Four_Four_Two_Diamond:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.CentralDefensiveMidfielder,
+          PlayerPosition.RightMidfielder,
+          PlayerPosition.LeftMidfielder,
+          PlayerPosition.CentralAttackingMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+      case Formation.Four_Three_One_Two:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.CentralCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.CentralAttackingMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+      case Formation.Four_One_Three_Two:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.CentralDefensiveMidfielder,
+          PlayerPosition.RightMidfielder,
+          PlayerPosition.CentralCenterMidfielder,
+          PlayerPosition.LeftMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+      case Formation.Four_One_Two_One_Two:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.CentralDefensiveMidfielder,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.CentralAttackingMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
       case Formation.Three_Four_Three:
         return [
           PlayerPosition.Goalkeeper,
@@ -524,14 +594,56 @@ export class ManagerProfile implements OnInit, OnDestroy {
           PlayerPosition.LeftStriker,
           PlayerPosition.LeftWinger
         ];
-      case Formation.Five_Four_One:
+      case Formation.Three_Six_One:
         return [
           PlayerPosition.Goalkeeper,
-          PlayerPosition.RightWingBack,
           PlayerPosition.RightCenterBack,
           PlayerPosition.CentralCenterBack,
           PlayerPosition.LeftCenterBack,
-          PlayerPosition.LeftWingBack,
+          PlayerPosition.RightMidfielder,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.CentralCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.LeftMidfielder,
+          PlayerPosition.CentralAttackingMidfielder,
+          PlayerPosition.CentralStriker
+        ];
+      case Formation.Three_Three_Two_Two:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.CentralCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.RightDefensiveMidfielder,
+          PlayerPosition.CentralDefensiveMidfielder,
+          PlayerPosition.LeftDefensiveMidfielder,
+          PlayerPosition.RightAttackingMidfielder,
+          PlayerPosition.LeftAttackingMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+      case Formation.Three_Two_Three_Two:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.CentralCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.RightDefensiveMidfielder,
+          PlayerPosition.LeftDefensiveMidfielder,
+          PlayerPosition.RightAttackingMidfielder,
+          PlayerPosition.CentralAttackingMidfielder,
+          PlayerPosition.LeftAttackingMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+      case Formation.Five_Four_One:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.CentralCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
           PlayerPosition.RightMidfielder,
           PlayerPosition.RightCenterMidfielder,
           PlayerPosition.LeftCenterMidfielder,
@@ -573,12 +685,12 @@ export class ManagerProfile implements OnInit, OnDestroy {
           PlayerPosition.RightCenterBack,
           PlayerPosition.LeftCenterBack,
           PlayerPosition.LeftBack,
-          PlayerPosition.RightMidfielder,
-          PlayerPosition.RightCenterMidfielder,
-          PlayerPosition.CentralDefensiveMidfielder,
-          PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.LeftMidfielder,
-          PlayerPosition.CentralAttackingMidfielder
+          PlayerPosition.RightDefensiveMidfielder,
+          PlayerPosition.LeftDefensiveMidfielder,
+          PlayerPosition.RightWinger,
+          PlayerPosition.RightAttackingMidfielder,
+          PlayerPosition.LeftAttackingMidfielder,
+          PlayerPosition.LeftWinger
         ];
       case Formation.Two_Three_Five:
         return [

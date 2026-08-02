@@ -100,42 +100,46 @@
           </div>
 
           <!-- Tactical Nodes -->
-          <div class="absolute inset-0 p-8 md:p-5 flex flex-col justify-between border-4 border-white rounded-lg">
-            <div class="flex justify-center items-center h-1/8"></div>
-
-            @for (row of pitchRows(); track row.rowIndex) {
-              <div class="flex items-center" [ngClass]="getRowClasses(row)">
-                @for (player of row.players; track player.position) {
-                  <div class="player-node-wrapper" [class.dragging-origin]="draggedPosition() === player.position">
-                    <div cdkDrag
-                         class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2"
-                         [cdkDragPreviewContainer]="'global'"
-                         [attr.data-position]="player.position"
-                         (cdkDragStarted)="onDragStarted($event, player)"
-                         (cdkDragMoved)="onDragMoved($event, player)"
-                         (cdkDragEnded)="onDragEnded($event, player)">
-                      <div class="player-shirt"
-                        [style.background-color]="getHomeShirtColor()"
-                        [style.border-color]="getHomeShortsColor()">
-                        {{ player.displayNumber }}
+          <div class="absolute inset-0 border-4 border-white rounded-lg">
+            <div class="absolute inset-0">
+              @for (row of pitchRows(); track row.rowIndex) {
+                <div
+                  class="absolute left-8 right-8 md:left-5 md:right-5 flex items-center"
+                  style="transform: translateY(-50%);"
+                  [style.top.%]="getPitchRowTop(row)"
+                  [ngClass]="getRowClasses(row)">
+                  @for (player of row.players; track player.position) {
+                    <div class="player-node-wrapper" [class.dragging-origin]="draggedPosition() === player.position">
+                      <div cdkDrag
+                           class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2"
+                           [cdkDragPreviewContainer]="'global'"
+                           [attr.data-position]="player.position"
+                           (cdkDragStarted)="onDragStarted($event, player)"
+                           (cdkDragMoved)="onDragMoved($event, player)"
+                           (cdkDragEnded)="onDragEnded($event, player)">
+                        <div class="player-shirt"
+                          [style.background-color]="getHomeShirtColor()"
+                          [style.border-color]="getHomeShortsColor()">
+                          {{ player.displayNumber }}
+                        </div>
+                        @if (player.personID) {
+                          <button type="button"
+                            class="player-node-name player-node-name-button bg-surface-container-highest/80 backdrop-blur px-1.5 py-0.5 rounded font-label font-bold uppercase border border-white/5"
+                            (click)="viewPitchPlayerProfile(player, $event)"
+                            [attr.aria-label]="'View profile for ' + player.playerName">
+                            {{ player.playerName }}
+                          </button>
+                        } @else {
+                          <span class="player-node-name bg-surface-container-highest/80 backdrop-blur px-1.5 py-0.5 rounded font-label font-bold uppercase border border-white/5">
+                            {{ player.playerName }}
+                          </span>
+                        }
                       </div>
-                      @if (player.personID) {
-                        <button type="button"
-                          class="player-node-name player-node-name-button bg-surface-container-highest/80 backdrop-blur px-1.5 py-0.5 rounded font-label font-bold uppercase border border-white/5"
-                          (click)="viewPitchPlayerProfile(player, $event)"
-                          [attr.aria-label]="'View profile for ' + player.playerName">
-                          {{ player.playerName }}
-                        </button>
-                      } @else {
-                        <span class="player-node-name bg-surface-container-highest/80 backdrop-blur px-1.5 py-0.5 rounded font-label font-bold uppercase border border-white/5">
-                          {{ player.playerName }}
-                        </span>
-                      }
                     </div>
-                  </div>
-                }
-              </div>
-            }
+                  }
+                </div>
+              }
+            </div>
           </div>
         </div>
       </section>

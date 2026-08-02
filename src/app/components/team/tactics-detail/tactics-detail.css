@@ -93,11 +93,6 @@
   flex: 1 1 auto;
 }
 
-.player-list-body {
-  min-height: 0;
-  overflow-y: auto;
-}
-
 .player-list-panel .player-list-body {
   flex: 1 1 auto;
 }
@@ -423,7 +418,6 @@
 .list-col-role {
   flex: 0 0 70px;
   font-size: 0.8rem;
-  text-align: left;
   text-align: center;
 }
 

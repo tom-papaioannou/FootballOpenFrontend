@@ -77,6 +77,114 @@ describe('TacticsDetail', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should expose the requested formations in the edit dropdown options', () => {
+    const labels = component.formationOptions.map(option => option.label);
+
+    expect(labels).toEqual(jasmine.arrayContaining([
+      '5-4-1',
+      '4-6-0',
+      '4-4-2-Diamond',
+      '4-4-1-1',
+      '4-3-2-1',
+      '4-3-1-2',
+      '4-2-3-1',
+      '4-2-2-2',
+      '4-1-4-1',
+      '4-1-3-2',
+      '4-1-2-1-2',
+      '3-6-1',
+      '3-4-3',
+      '3-3-2-2',
+      '3-2-3-2'
+    ]));
+  });
+
+  it('should sort formation dropdown options by label', () => {
+    const labels = component.formationOptions.map(option => option.label);
+    const sortedLabels = [...labels].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+    expect(labels).toEqual(sortedLabels);
+  });
+
+  it('should keep RM and LM wide when they are the only players in a pitch row', () => {
+    const rowClass = component.getRowClasses({
+      rowIndex: 3,
+      isGoalkeeper: false,
+      players: [{
+        position: PlayerPosition.LeftMidfielder,
+        positionLabel: 'LM',
+        playerName: 'L. Midfielder',
+        displayNumber: 16,
+        role: PlayerRole.WideMidfielder
+      }, {
+        position: PlayerPosition.RightMidfielder,
+        positionLabel: 'RM',
+        playerName: 'R. Midfielder',
+        displayNumber: 12,
+        role: PlayerRole.WideMidfielder
+      }]
+    });
+
+    expect(rowClass).toBe('justify-between');
+  });
+
+  it('should keep central two-player rows compact', () => {
+    const rowClass = component.getRowClasses({
+      rowIndex: 5,
+      isGoalkeeper: false,
+      players: [{
+        position: PlayerPosition.LeftStriker,
+        positionLabel: 'LST',
+        playerName: 'L. Striker',
+        displayNumber: 24,
+        role: PlayerRole.AdvancedForward
+      }, {
+        position: PlayerPosition.RightStriker,
+        positionLabel: 'RST',
+        playerName: 'R. Striker',
+        displayNumber: 22,
+        role: PlayerRole.AdvancedForward
+      }]
+    });
+
+    expect(rowClass).toBe('justify-center gap-10');
+  });
+
+  it('should preserve empty tactical row bands so positions keep consistent heights', () => {
+    component.playerTactics.set([
+      PlayerPosition.Goalkeeper,
+      PlayerPosition.RightBack,
+      PlayerPosition.RightCenterBack,
+      PlayerPosition.LeftCenterBack,
+      PlayerPosition.LeftBack,
+      PlayerPosition.RightDefensiveMidfielder,
+      PlayerPosition.LeftDefensiveMidfielder,
+      PlayerPosition.RightWinger,
+      PlayerPosition.RightAttackingMidfielder,
+      PlayerPosition.LeftAttackingMidfielder,
+      PlayerPosition.LeftWinger
+    ].map((playerPosition, index) => ({
+      playerTacticID: `player-tactic-${index}`,
+      tacticID: baseTactic.tacticID!,
+      playerPosition,
+      playerRole: playerPosition === PlayerPosition.Goalkeeper
+        ? PlayerRole.Goalkeeper
+        : PlayerRole.AdvancedForward,
+      squadUnit: SquadUnit.Starting
+    })));
+
+    const rows = component.pitchRows();
+
+    expect(rows.map(row => row.rowIndex)).toEqual([5, 4, 3, 2, 1, 0]);
+    expect(rows.find(row => row.rowIndex === 3)?.players).toEqual([]);
+    expect(rows.find(row => row.rowIndex === 2)?.players.map(player => player.position))
+      .toEqual([PlayerPosition.LeftDefensiveMidfielder, PlayerPosition.RightDefensiveMidfielder]);
+    expect(component.getPitchRowTop(rows.find(row => row.rowIndex === 2)!)).toBe(62);
+    expect(component.getPitchRowTop(rows.find(row => row.rowIndex === 1)!)).toBe(76.5);
+    expect(component.getPitchRowTop(rows.find(row => row.rowIndex === 3)!)).toBe(50);
+    expect(component.getPitchRowTop(rows.find(row => row.rowIndex === 4)!)).toBe(34);
+  });
+
   it('should reload tactic details after a formation change', () => {
     tacticsService.updateTeamTactic.and.returnValue(of({
       ...baseTactic,

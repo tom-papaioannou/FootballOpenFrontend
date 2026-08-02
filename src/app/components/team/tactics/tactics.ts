@@ -18,6 +18,11 @@ import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
 import { Person, PlayerPosition } from '../../../models/player-enums.model';
 import { TeamTacticPriority, TeamTacticPriorityType } from '../../../models/team-tactic-priority.model';
+import {
+  FORMATION_OPTIONS,
+  getFormationLabel as getFormationDisplayLabel,
+  getFormationPositions as getFormationPreviewPositions
+} from '../../../utils/formation-utils';
 import { getPositionPitchRow } from '../../../utils/position-utils';
 
 interface FormationPreviewRow {
@@ -79,32 +84,7 @@ export class Tactics implements OnInit {
   tacticForm: FormGroup;
 
   // Formation options for dropdown
-  formationOptions = [
-    // Classic formations
-    { value: Formation.Four_Four_Two, label: '4-4-2' },
-    { value: Formation.Four_Three_Three, label: '4-3-3' },
-    { value: Formation.Three_Five_Two, label: '3-5-2' },
-    { value: Formation.Five_Three_Two, label: '5-3-2' },
-    { value: Formation.Four_Five_One, label: '4-5-1' },
-    // 4 at the back variations
-    // { value: Formation.Four_Two_Three_One, label: '4-2-3-1' },
-    // { value: Formation.Four_Three_Two_One, label: '4-3-2-1' },
-    // { value: Formation.Four_One_Four_One, label: '4-1-4-1' },
-    // { value: Formation.Four_Four_One_One, label: '4-4-1-1' },
-    // { value: Formation.Four_Two_Two_Two, label: '4-2-2-2' },
-    // // 3 at the back
-    // { value: Formation.Three_Four_Three, label: '3-4-3' },
-    // { value: Formation.Three_Four_Two_One, label: '3-4-2-1' },
-    // { value: Formation.Three_Four_One_Two, label: '3-4-1-2' },
-    // { value: Formation.Three_Three_Four, label: '3-3-4' },
-    // // 5 at the back / wingbacks
-    // { value: Formation.Five_Four_One, label: '5-4-1' },
-    // { value: Formation.Five_Two_Three, label: '5-2-3' },
-    // { value: Formation.Five_Three_One_One, label: '5-3-1-1' },
-    // // Uncommon / historical
-    // { value: Formation.Four_Six_Zero, label: '4-6-0' },
-    // { value: Formation.Two_Three_Five, label: '2-3-5' }
-  ];
+  formationOptions = FORMATION_OPTIONS;
 
   tacticMentalityOptions = [
     { value: TacticMentality.ExtremelyDefending, label: 'Extremely Defending' },
@@ -517,7 +497,7 @@ export class Tactics implements OnInit {
   }
 
   getFormationLabel(formation?: Formation): string {
-    return this.formationOptions.find(option => option.value === formation)?.label ?? '4-4-2';
+    return getFormationDisplayLabel(formation);
   }
 
   getTacticMentalityLabel(tacticMentality?: TacticMentality): string {
@@ -557,78 +537,7 @@ export class Tactics implements OnInit {
   }
 
   private getFormationPositions(formation?: Formation): PlayerPosition[] {
-    switch(formation) {
-      case Formation.Four_Three_Three:
-        return [
-          PlayerPosition.Goalkeeper,
-          PlayerPosition.RightBack,
-          PlayerPosition.RightCenterBack,
-          PlayerPosition.LeftCenterBack,
-          PlayerPosition.LeftBack,
-          PlayerPosition.RightCenterMidfielder,
-          PlayerPosition.CentralCenterMidfielder,
-          PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.RightWinger,
-          PlayerPosition.CentralStriker,
-          PlayerPosition.LeftWinger
-        ];
-      case Formation.Three_Five_Two:
-        return [
-          PlayerPosition.Goalkeeper,
-          PlayerPosition.RightCenterBack,
-          PlayerPosition.CentralCenterBack,
-          PlayerPosition.LeftCenterBack,
-          PlayerPosition.RightMidfielder,
-          PlayerPosition.RightCenterMidfielder,
-          PlayerPosition.CentralCenterMidfielder,
-          PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.LeftMidfielder,
-          PlayerPosition.RightStriker,
-          PlayerPosition.LeftStriker
-        ];
-      case Formation.Five_Three_Two:
-        return [
-          PlayerPosition.Goalkeeper,
-          PlayerPosition.RightBack,
-          PlayerPosition.RightCenterBack,
-          PlayerPosition.CentralCenterBack,
-          PlayerPosition.LeftCenterBack,
-          PlayerPosition.LeftBack,
-          PlayerPosition.RightCenterMidfielder,
-          PlayerPosition.CentralCenterMidfielder,
-          PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.RightStriker,
-          PlayerPosition.LeftStriker
-        ];
-      case Formation.Four_Five_One:
-        return [
-          PlayerPosition.Goalkeeper,
-          PlayerPosition.RightBack,
-          PlayerPosition.RightCenterBack,
-          PlayerPosition.LeftCenterBack,
-          PlayerPosition.LeftBack,
-          PlayerPosition.RightMidfielder,
-          PlayerPosition.RightCenterMidfielder,
-          PlayerPosition.CentralCenterMidfielder,
-          PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.LeftMidfielder,
-          PlayerPosition.CentralStriker
-        ];
-      default:
-        return [
-          PlayerPosition.Goalkeeper,
-          PlayerPosition.RightBack,
-          PlayerPosition.RightCenterBack,
-          PlayerPosition.LeftCenterBack,
-          PlayerPosition.LeftBack,
-          PlayerPosition.RightMidfielder,
-          PlayerPosition.RightCenterMidfielder,
-          PlayerPosition.LeftCenterMidfielder,
-          PlayerPosition.LeftMidfielder,
-          PlayerPosition.RightStriker,
-          PlayerPosition.LeftStriker
-        ];
-    }
+    return getFormationPreviewPositions(formation);
   }
 
   viewTacticDetails(tactic: Tactic): void {
