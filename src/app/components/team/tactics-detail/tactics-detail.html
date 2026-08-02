@@ -6,9 +6,6 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
     <h2 class="text-2xl font-bold">{{tactic()?.name}}</h2>
-    <button class="flex items-center cursor-pointer hover:text-gray-300" (click)="openEditPopup()" aria-label="Edit tactic">
-      <mat-icon>edit</mat-icon>
-    </button>
   </div>
 
   <!-- Error Message -->
@@ -28,7 +25,72 @@
   <!-- Content: Tactic Card and Players Table -->
   @if (!loading() && tactic()) {
   <div class="tactics-detail-layout flex flex-col md:flex-row">
-    <!-- Left Side: Tactic Card -->
+    <!-- Left Side: Tactic Edit Options -->
+    <aside class="tactic-edit-sidebar rounded-xl border p-3" aria-label="Tactic edit options">
+      <div class="tactic-edit-fields">
+        <div class="player-popup-field tactic-edit-field tactic-name-field">
+          <span class="player-popup-label">Name</span>
+          <div class="tactic-name-controls">
+            <input class="tactic-edit-input"
+              type="text"
+              maxlength="30"
+              [(ngModel)]="editModel().name"
+              aria-label="Tactic name" />
+            <button class="tactic-main-button"
+              mat-icon-button
+              type="button"
+              [class.active]="editModel().isMain"
+              (click)="editModel().isMain = !editModel().isMain"
+              [disabled]="tactic()?.isMain || editSaving()"
+              [attr.aria-label]="editModel().isMain ? 'Unset tactic as main' : 'Set tactic as main'"
+              [attr.aria-pressed]="editModel().isMain">
+              <mat-icon>star</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <label class="player-popup-field tactic-edit-field">
+          <span class="player-popup-label">Formation</span>
+          <select class="role-select player-popup-select"
+            [(ngModel)]="editModel().formation"
+            aria-label="Tactic formation">
+            @for (formation of formationOptions; track formation.value) {
+              <option [ngValue]="formation.value">{{ formation.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="player-popup-field tactic-edit-field">
+          <span class="player-popup-label">Mentality</span>
+          <select class="role-select player-popup-select"
+            [(ngModel)]="editModel().tacticMentality"
+            aria-label="Tactic mentality">
+            @for (mentality of tacticMentalityOptions; track mentality.value) {
+              <option [ngValue]="mentality.value">{{ mentality.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="player-popup-field tactic-edit-field">
+          <span class="player-popup-label">Passing</span>
+          <select class="role-select player-popup-select"
+            [(ngModel)]="editModel().passingMentality"
+            aria-label="Passing mentality">
+            @for (passing of passingMentalityOptions; track passing.value) {
+              <option [ngValue]="passing.value">{{ passing.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="tactic-edit-actions">
+        <button mat-button color="primary" type="button" (click)="saveTacticEdit()" [disabled]="editSaving()">
+          Save
+        </button>
+      </div>
+    </aside>
+
+    <!-- Center: Tactic Card -->
     <div class="tactic-section">
       <section class="xl:col-span-8">
         <div class="bg-surface-container-low rounded-xl relative aspect-[3/4] md:aspect-[10/16] border border-white/5 shadow-2xl w-full max-w-3xl min-h-[654px]">
@@ -88,7 +150,7 @@
               <div class="player-list-header">
                 <span class="list-col-pos">Pos</span>
                 <span class="list-col-role">Role</span>
-                <span class="list-col-suitability" title="Power for Position and Role">PPR</span>
+                <span class="list-col-suitability" title="Position/Role Suitability">PRS</span>
                 <span class="list-col-name">Name</span>
                 <span class="list-col-trained-pos" title="Best Position">BP</span>
                 <span class="list-col-trained-role" title="Best Role">BR</span>
@@ -249,85 +311,6 @@
           }
         </select>
       </label>
-    </section>
-  </div>
-  }
-
-  @if (editPopupOpen()) {
-  <div class="player-popup-backdrop" (click)="closeEditPopup()">
-    <section class="player-popup tactic-edit-popup" role="dialog" aria-modal="true" aria-label="Edit tactic" (click)="$event.stopPropagation()">
-      <div class="player-popup-header">
-        <h3>Edit Tactic</h3>
-        <button mat-icon-button type="button" (click)="closeEditPopup()" aria-label="Close tactic editor" [disabled]="editSaving()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-
-      <div class="tactic-edit-grid">
-        <div class="tactic-edit-column">
-          <div class="player-popup-field tactic-edit-field tactic-name-field">
-            <span class="player-popup-label">Name</span>
-            <div class="tactic-name-controls">
-              <input class="tactic-edit-input"
-                type="text"
-                maxlength="30"
-                [(ngModel)]="editModel().name"
-                aria-label="Tactic name" />
-              <button class="tactic-main-button"
-                mat-icon-button
-                type="button"
-                [class.active]="editModel().isMain"
-                (click)="editModel().isMain = !editModel().isMain"
-                [disabled]="tactic()?.isMain || editSaving()"
-                [attr.aria-label]="editModel().isMain ? 'Unset tactic as main' : 'Set tactic as main'"
-                [attr.aria-pressed]="editModel().isMain">
-                <mat-icon>star</mat-icon>
-              </button>
-            </div>
-          </div>
-
-          <label class="player-popup-field tactic-edit-field">
-            <span class="player-popup-label">Formation</span>
-            <select class="role-select player-popup-select"
-              [(ngModel)]="editModel().formation"
-              aria-label="Tactic formation">
-              @for (formation of formationOptions; track formation.value) {
-                <option [ngValue]="formation.value">{{ formation.label }}</option>
-              }
-            </select>
-          </label>
-
-          <label class="player-popup-field tactic-edit-field">
-            <span class="player-popup-label">Mentality</span>
-            <select class="role-select player-popup-select"
-              [(ngModel)]="editModel().tacticMentality"
-              aria-label="Tactic mentality">
-              @for (mentality of tacticMentalityOptions; track mentality.value) {
-                <option [ngValue]="mentality.value">{{ mentality.label }}</option>
-              }
-            </select>
-          </label>
-
-          <label class="player-popup-field tactic-edit-field">
-            <span class="player-popup-label">Passing</span>
-            <select class="role-select player-popup-select"
-              [(ngModel)]="editModel().passingMentality"
-              aria-label="Passing mentality">
-              @for (passing of passingMentalityOptions; track passing.value) {
-                <option [ngValue]="passing.value">{{ passing.label }}</option>
-              }
-            </select>
-          </label>
-
-        </div>
-      </div>
-
-      <div class="tactic-edit-actions">
-        <button mat-button type="button" (click)="closeEditPopup()" [disabled]="editSaving()">Cancel</button>
-        <button mat-button color="primary" type="button" (click)="saveTacticEdit()" [disabled]="editSaving()">
-          Save
-        </button>
-      </div>
     </section>
   </div>
   }

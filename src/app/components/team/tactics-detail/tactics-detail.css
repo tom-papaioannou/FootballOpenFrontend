@@ -36,12 +36,30 @@
 
 .tactics-detail-layout {
   align-items: flex-start;
+  gap: 12px;
 }
 
 .tactic-section {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  flex: 0 0 auto;
+}
+
+.tactic-edit-sidebar {
+  display: flex;
+  flex: 0 0 260px;
+  flex-direction: column;
+  height: 654px;
+  min-width: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.tactic-edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .players-section {
@@ -49,7 +67,6 @@
   flex-direction: column;
   width: 920px;
   flex-shrink: 0;
-  padding: 0px 16px;
 }
 
 .players-lists {
@@ -111,11 +128,18 @@
   }
 
   .tactic-section,
+  .tactic-edit-sidebar,
   .players-section {
     width: 100%;
     max-width: 100%;
     padding-left: 4px;
     padding-right: 4px;
+  }
+
+  .tactic-edit-sidebar {
+    flex-basis: auto;
+    height: auto;
+    min-height: 0;
   }
 
   .player-tactics-list {
@@ -518,26 +542,14 @@
   width: 180px;
 }
 
-.tactic-edit-popup {
-  width: min(760px, 100%);
-}
-
-.tactic-edit-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: 16px 28px;
-}
-
-.tactic-edit-column {
-  min-width: 0;
-}
-
 .tactic-edit-field {
-  align-items: baseline;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .tactic-edit-input {
-  width: 180px;
+  width: 100%;
   border-radius: 6px;
   border: 1px solid rgba(148, 163, 184, 0.45);
   background-color: rgba(15, 23, 42, 0.72);
@@ -546,8 +558,12 @@
   padding: 4px 8px;
 }
 
+.tactic-edit-field .player-popup-select {
+  width: 100%;
+}
+
 .tactic-name-field {
-  align-items: center;
+  align-items: flex-start;
 }
 
 .tactic-name-controls {
@@ -555,7 +571,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  width: 180px;
+  width: 100%;
   min-width: 0;
 }
 
@@ -572,7 +588,7 @@
   border-radius: 6px;
   color: #020617;
   padding: 2px;
-  transform: translateY(-1px);
+  transform: translateY(-4px);
 }
 
 .tactic-main-button mat-icon {
@@ -592,32 +608,16 @@
 
 .tactic-edit-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: stretch;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.tactic-edit-actions button {
+  width: 100%;
 }
 
 .tactic-edit-actions button:hover:not(:disabled) {
   color: rgb(15, 23, 42);
-}
-
-@media (max-width: 480px) {
-  .tactic-edit-grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .tactic-edit-field {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .tactic-edit-input,
-  .tactic-edit-field .player-popup-select {
-    width: 100%;
-  }
-
-  .tactic-name-controls {
-    width: 100%;
-  }
 }
