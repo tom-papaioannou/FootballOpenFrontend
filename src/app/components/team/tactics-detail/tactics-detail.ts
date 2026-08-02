@@ -170,12 +170,6 @@ interface TacticEditModel {
   formation: Formation;
   tacticMentality: TacticMentality;
   passingMentality: PassingMentality;
-  captainID: string | null;
-  penaltyTakerID: string | null;
-  leftCornerTakerID: string | null;
-  rightCornerTakerID: string | null;
-  leftFreeKickTakerID: string | null;
-  rightFreeKickTakerID: string | null;
 }
 
 export interface PitchRowPlayer {
@@ -235,7 +229,6 @@ export class TacticsDetail implements OnInit, OnDestroy {
   // State signals
   tactic = signal<Tactic | null>(null);
   playerTactics = signal<PlayerTactic[]>([]);
-  teamPlayers = signal<Person[]>([]);
   teamKit = signal<Kit | null>(null);
   loading = signal(false);
   editSaving = signal(false);
@@ -247,13 +240,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
     isMain: false,
     formation: Formation.Four_Four_Two,
     tacticMentality: TacticMentality.Balanced,
-    passingMentality: PassingMentality.Balanced,
-    captainID: null,
-    penaltyTakerID: null,
-    leftCornerTakerID: null,
-    rightCornerTakerID: null,
-    leftFreeKickTakerID: null,
-    rightFreeKickTakerID: null
+    passingMentality: PassingMentality.Balanced
   });
 
   /** Tracks the position of the currently dragged player (null when not dragging) */
@@ -414,27 +401,11 @@ export class TacticsDetail implements OnInit, OnDestroy {
           this.tactic.set(tactic);
           this.playerTactics.set(playerTactics);
           this.loading.set(false);
-          this.loadTeamPlayers(tactic.teamID);
           this.cdr.markForCheck();
         },
         error: (err) => {
           this.error.set(err.message || 'Failed to load tactic details');
           this.loading.set(false);
-          this.cdr.markForCheck();
-        }
-      });
-  }
-
-  private loadTeamPlayers(teamID: string): void {
-    this.teamsService.getTeamSquad(teamID)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (players) => {
-          this.teamPlayers.set([...players].sort((a, b) => this.getPlayerFullName(a).localeCompare(this.getPlayerFullName(b))));
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          this.error.set(err.message || 'Failed to load team players');
           this.cdr.markForCheck();
         }
       });
@@ -465,13 +436,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       isMain: tactic.isMain,
       formation: tactic.formation ?? Formation.Four_Four_Two,
       tacticMentality: tactic.tacticMentality ?? TacticMentality.Balanced,
-      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced,
-      captainID: tactic.captainID ?? null,
-      penaltyTakerID: tactic.penaltyTakerID ?? null,
-      leftCornerTakerID: tactic.leftCornerTakerID ?? null,
-      rightCornerTakerID: tactic.rightCornerTakerID ?? null,
-      leftFreeKickTakerID: tactic.leftFreeKickTakerID ?? null,
-      rightFreeKickTakerID: tactic.rightFreeKickTakerID ?? null
+      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced
     });
     this.editPopupOpen.set(true);
   }
@@ -505,13 +470,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       isMain: model.isMain,
       formation: Number(model.formation) as Formation,
       tacticMentality: Number(model.tacticMentality) as TacticMentality,
-      passingMentality: Number(model.passingMentality) as PassingMentality,
-      captainID: model.captainID || null,
-      penaltyTakerID: model.penaltyTakerID || null,
-      leftCornerTakerID: model.leftCornerTakerID || null,
-      rightCornerTakerID: model.rightCornerTakerID || null,
-      leftFreeKickTakerID: model.leftFreeKickTakerID || null,
-      rightFreeKickTakerID: model.rightFreeKickTakerID || null
+      passingMentality: Number(model.passingMentality) as PassingMentality
     };
     const previousFormation = tactic.formation ?? Formation.Four_Four_Two;
 
@@ -542,10 +501,6 @@ export class TacticsDetail implements OnInit, OnDestroy {
           this.cdr.markForCheck();
         }
       });
-  }
-
-  getPlayerFullName(player: Person): string {
-    return `${player.name ?? ''} ${player.surname ?? ''}`.trim() || 'Unknown Player';
   }
 
   getHomeShirtColor(): string {

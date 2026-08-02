@@ -103,13 +103,7 @@ describe('TacticsDetail', () => {
       isMain: false,
       formation: Formation.Four_Three_Three,
       tacticMentality: TacticMentality.Balanced,
-      passingMentality: PassingMentality.Balanced,
-      captainID: null,
-      penaltyTakerID: null,
-      leftCornerTakerID: null,
-      rightCornerTakerID: null,
-      leftFreeKickTakerID: null,
-      rightFreeKickTakerID: null
+      passingMentality: PassingMentality.Balanced
     });
 
     spyOn(component, 'loadTacticDetails');
@@ -137,13 +131,7 @@ describe('TacticsDetail', () => {
       isMain: updatedTactic.isMain,
       formation: updatedTactic.formation!,
       tacticMentality: updatedTactic.tacticMentality ?? TacticMentality.Balanced,
-      passingMentality: updatedTactic.passingMentality ?? PassingMentality.Balanced,
-      captainID: null,
-      penaltyTakerID: null,
-      leftCornerTakerID: null,
-      rightCornerTakerID: null,
-      leftFreeKickTakerID: null,
-      rightFreeKickTakerID: null
+      passingMentality: updatedTactic.passingMentality ?? PassingMentality.Balanced
     });
 
     spyOn(component, 'loadTacticDetails');

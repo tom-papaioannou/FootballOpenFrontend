@@ -239,7 +239,9 @@ describe('Tactics', () => {
       component.tacticForm.setValue({
         Name: 'New Tactic',
         isMain: false,
-        Formation: Formation.Four_Three_Three
+        Formation: Formation.Four_Three_Three,
+        TacticMentality: component.tacticForm.get('TacticMentality')?.value,
+        PassingMentality: component.tacticForm.get('PassingMentality')?.value
       });
 
       component.saveTactic();
