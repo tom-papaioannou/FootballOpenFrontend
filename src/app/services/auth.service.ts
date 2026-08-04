@@ -5,7 +5,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
 import { ServerService } from './server.service';
@@ -88,7 +88,41 @@ export class AuthService {
   }
 
   getDefaultAuthenticatedRoute(): string {
-    return this.getRole().toLowerCase() === 'admin' ? '/adminpanel' : '/home';
+    const role = this.getRole().toLowerCase();
+
+    if (role === 'admin') {
+      return '/adminpanel';
+    }
+
+    if (role === 'host' && this.currentServerID) {
+      return `/server/${this.currentServerID}`;
+    }
+
+    return '/home';
+  }
+
+  getDefaultAuthenticatedRoute$(): Observable<string> {
+    const role = this.getRole().toLowerCase();
+
+    if (role === 'admin') {
+      return of('/adminpanel');
+    }
+
+    if (role === 'host') {
+      if (this.currentServerID) {
+        return of(`/server/${this.currentServerID}`);
+      }
+
+      return this.loadUserServerID().pipe(
+        map((serverID) => serverID ? `/server/${serverID}` : '/home'),
+        catchError((err) => {
+          console.error('Failed to resolve default authenticated route', err);
+          return of('/home');
+        })
+      );
+    }
+
+    return of('/home');
   }
 
   getUserID(): string {
@@ -99,18 +133,28 @@ export class AuthService {
   }
 
   fetchAndStoreServerID(): void {
-    const userID = this.getUserID();
-    if (!userID) return;
-    this.serverService.getUserServer(userID).pipe(take(1)).subscribe({
-      next: (serverID) => {
-        this.currentServerID = serverID;
-        sessionStorage.setItem('serverID', this.currentServerID);
-        this.serverSubject.next(this.currentServerID);
-      },
+    this.loadUserServerID().subscribe({
       error: (err) => {
         console.error('Failed to fetch user server', err);
       }
     });
+  }
+
+  private loadUserServerID(): Observable<string | null> {
+    const userID = this.getUserID();
+    if (!userID) return of(null);
+
+    return this.serverService.getUserServer(userID).pipe(
+      take(1),
+      tap((serverID) => {
+        if (serverID) {
+          this.currentServerID = serverID;
+          sessionStorage.setItem('serverID', this.currentServerID);
+          this.serverSubject.next(this.currentServerID);
+        }
+      }),
+      map((serverID) => serverID || null)
+    );
   }
 
   getCurrentUserSummary(): Observable<CurrentUserSummary> {

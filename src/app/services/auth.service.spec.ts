@@ -86,8 +86,39 @@ describe('AuthService', () => {
       expect(service.getDefaultAuthenticatedRoute()).toBe('/adminpanel');
     });
 
+    it('should send hosts with a cached server ID to their server page', () => {
+      const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiSG9zdCIsImV4cCI6OTk5OTk5OTk5OX0.placeholder';
+
+      service.refreshToken().subscribe();
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/refresh`);
+      req.flush({ token: mockToken, role: 'Host' });
+      service.currentServerID = 'server-id-456';
+
+      expect(service.getDefaultAuthenticatedRoute()).toBe('/server/server-id-456');
+    });
+
     it('should send other roles to home', () => {
       expect(service.getDefaultAuthenticatedRoute()).toBe('/home');
+    });
+  });
+
+  describe('getDefaultAuthenticatedRoute$', () => {
+    it('should fetch a host server ID before routing to the server page', (done) => {
+      const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiSG9zdCIsInN1YiI6InVzZXItYWJjIiwiZXhwIjo5OTk5OTk5OTk5fQ.placeholder';
+
+      service.refreshToken().subscribe();
+      const refreshReq = httpMock.expectOne(`${environment.apiUrl}/api/auth/refresh`);
+      refreshReq.flush({ token: mockToken, role: 'Host' });
+
+      service.getDefaultAuthenticatedRoute$().subscribe((route) => {
+        expect(route).toBe('/server/server-id-456');
+        expect(service.currentServerID).toBe('server-id-456');
+        done();
+      });
+
+      const serverReq = httpMock.expectOne(`${environment.apiUrl}/api/Servers/getUserServer/user-abc`);
+      expect(serverReq.request.method).toBe('GET');
+      serverReq.flush('server-id-456');
     });
   });
 
