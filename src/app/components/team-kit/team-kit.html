@@ -1,3 +1,21 @@
 <div class="flex flex-col items-center">
-    <div class="shirt-icon" [style.background-color]="isHome ? kit?.homeShirtColor : kit?.awayShirtColor"></div>
+    <div class="shirt-container">
+        <div
+            class="shirt-icon"
+            [style.background-color]="isHome ? kit?.homeShirtColor : kit?.awayShirtColor">
+        </div>
+        @if (patternClass) {
+            <div
+                class="shirt-pattern"
+                [ngClass]="patternClass"
+                [style.background-color]="isHome ? kit?.homeShortsColor : kit?.awayShortsColor"
+                aria-hidden="true">
+            </div>
+        }
+        <div
+            class="shirt-neck"
+            [style.background-color]="isHome ? kit?.homeShortsColor : kit?.awayShortsColor"
+            aria-hidden="true">
+        </div>
+    </div>
 </div>

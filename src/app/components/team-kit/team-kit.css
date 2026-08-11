@@ -1,11 +1,69 @@
-.shirt-icon {
+.shirt-container {
+  position: relative;
+  display: inline-block;
   width: 100px;
   height: 110px;
+}
+
+.shirt-icon {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
   background-color: white;
   mask: url('/assets/images/shirt.svg') center / contain no-repeat;
   mask-mode: alpha;
   -webkit-mask: url('/assets/images/shirt.svg') center / contain no-repeat;
   -webkit-mask-mode: alpha;
+}
+
+.shirt-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  mask-mode: alpha;
+  -webkit-mask-mode: alpha;
+  pointer-events: none;
+}
+
+.shirt-pattern-striped-five {
+  mask: url('/assets/images/shirt_stripes_5.svg') center / contain no-repeat;
+  -webkit-mask: url('/assets/images/shirt_stripes_5.svg') center / contain no-repeat;
+}
+
+.shirt-pattern-striped-seven {
+  mask: url('/assets/images/shirt_stripes_7.svg') center / contain no-repeat;
+  -webkit-mask: url('/assets/images/shirt_stripes_7.svg') center / contain no-repeat;
+}
+
+.shirt-pattern-diagonal {
+  mask: url('/assets/images/shirt_diagonal_stripe.svg') center / contain no-repeat;
+  -webkit-mask: url('/assets/images/shirt_diagonal_stripe.svg') center / contain no-repeat;
+}
+
+.shirt-pattern-half {
+  mask: url('/assets/images/shirt_half_and_half.svg') center / contain no-repeat;
+  -webkit-mask: url('/assets/images/shirt_half_and_half.svg') center / contain no-repeat;
+}
+
+.shirt-neck {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  mask: url('/assets/images/shirt_neck.svg') center / contain no-repeat;
+  mask-mode: alpha;
+  -webkit-mask: url('/assets/images/shirt_neck.svg') center / contain no-repeat;
+  -webkit-mask-mode: alpha;
+  pointer-events: none;
 }
 
 .shorts {
