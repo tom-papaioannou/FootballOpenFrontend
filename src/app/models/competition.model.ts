@@ -26,6 +26,14 @@ export enum CupRoundType {
   Final = 6
 }
 
+export enum KitShape {
+  Empty = 0,
+  StripedFiveLines = 1,
+  StripedSevenLines = 2,
+  DiagonalStripe = 3,
+  HalfAndHalf = 4
+}
+
 // Competition model for managing competitions under nations or continents
 export interface Competition {
   competitionID?: string;
@@ -118,6 +126,7 @@ export interface Kit {
   homeShortsColor: string;
   awayShirtColor: string;
   awayShortsColor: string;
+  kitShape?: KitShape | keyof typeof KitShape | string | null;
 }
 
 export interface Stadium {

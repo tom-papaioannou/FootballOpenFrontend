@@ -341,15 +341,6 @@
   font-size: 0.9rem;
 }
 
-.third-kit {
-  height: 110px;
-  mask: url('/assets/images/shirt.svg') center / contain no-repeat;
-  mask-mode: alpha;
-  -webkit-mask: url('/assets/images/shirt.svg') center / contain no-repeat;
-  -webkit-mask-mode: alpha;
-  width: 100px;
-}
-
 ::ng-deep .success-snackbar {
   background-color: #4caf50 !important;
   color: white !important;

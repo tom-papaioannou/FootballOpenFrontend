@@ -248,10 +248,10 @@
                       <span>Away</span>
                       <app-team-kit [kit]="selectedTeam.kit" [isHome]="false"></app-team-kit>
                     </div>
-                    @if ($any(selectedTeam.kit)?.thirdShirtColor) {
+                    @if (thirdKitPreview) {
                       <div class="kit-preview">
                         <span>Third</span>
-                        <div class="third-kit" [style.background-color]="$any(selectedTeam.kit)?.thirdShirtColor"></div>
+                        <app-team-kit [kit]="thirdKitPreview" [isHome]="true"></app-team-kit>
                       </div>
                     }
                   </div>

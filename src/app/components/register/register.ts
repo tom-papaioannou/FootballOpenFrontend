@@ -17,6 +17,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
+import { Kit } from '../../models/competition.model';
 import { AuthService } from '../../services/auth.service';
 import { RegistrationService } from '../../services/registration.service';
 import {
@@ -186,6 +187,23 @@ export class Register implements OnInit {
 
   get availableTeamsCount(): number {
     return this.teams.filter(team => team.isAvailable).length;
+  }
+
+  get thirdKitPreview(): Kit | null {
+    const kit = this.selectedTeam?.kit as (Kit & {
+      thirdShirtColor?: string | null;
+      thirdShortsColor?: string | null;
+    }) | null | undefined;
+
+    if (!kit?.thirdShirtColor) {
+      return null;
+    }
+
+    return {
+      ...kit,
+      homeShirtColor: kit.thirdShirtColor,
+      homeShortsColor: kit.thirdShortsColor ?? kit.homeShortsColor
+    };
   }
 
   passwordRulesValidator = (control: AbstractControl): ValidationErrors | null => {
