@@ -20,7 +20,7 @@ interface StaffTableRow {
   name: string;
   nationalityFlagUrl: string;
   nationalityName: string;
-  role: 'Manager' | 'Coach';
+  role: 'Manager' | 'Coach' | 'Medic';
   wage: string;
   wageValue: number;
   contractEndDate: string;
@@ -170,7 +170,9 @@ export class Staff implements OnInit, OnDestroy {
   openStaffProfile(event: MouseEvent, staffMember: StaffTableRow): void {
     event.stopPropagation();
 
-    const route = staffMember.role === 'Manager' ? '/manager-profile' : '/coach-profile';
+    const route = staffMember.role === 'Manager'
+      ? '/manager-profile'
+      : staffMember.role === 'Coach' ? '/coach-profile' : '/medic-profile';
     this.router.navigate([route, staffMember.personID]);
   }
 

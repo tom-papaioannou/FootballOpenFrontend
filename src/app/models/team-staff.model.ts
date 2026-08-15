@@ -8,7 +8,7 @@ export interface TeamStaffMember {
   name?: string | null;
   surname?: string | null;
   nationID?: string | null;
-  role: 'Manager' | 'Coach';
+  role: 'Manager' | 'Coach' | 'Medic';
   wage: number;
   endDate?: string | null;
 }

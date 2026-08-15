@@ -23,6 +23,7 @@ import { filter, startWith } from 'rxjs';
 export class Team {
   squadLink: string[] = ['/team', 'squad'];
   fixturesLink: string[] = ['/team', 'fixtures'];
+  staffLink: string[] = ['/team', 'staff'];
   private readonly destroyRef = inject(DestroyRef);
 
   constructor(
@@ -43,5 +44,6 @@ export class Team {
 
     this.squadLink = teamID ? ['/team', teamID, 'squad'] : ['/team', 'squad'];
     this.fixturesLink = teamID ? ['/team', teamID, 'fixtures'] : ['/team', 'fixtures'];
+    this.staffLink = teamID ? ['/team', teamID, 'staff'] : ['/team', 'staff'];
   }
 }

@@ -64,13 +64,15 @@ describe('App Routes', () => {
     expect(teamRoute?.canActivate).toContain(authenticationGuard);
   });
 
-  it('should include squad and fixtures child routes under team', () => {
+  it('should include squad, fixtures, and staff child routes under team', () => {
     const teamRoute = routes.find(r => r.path === 'team');
     const squadRoute = teamRoute?.children?.find(c => c.path === 'squad');
     const fixturesRoute = teamRoute?.children?.find(c => c.path === 'fixtures');
+    const staffRoute = teamRoute?.children?.find(c => c.path === 'staff');
 
     expect(squadRoute).toBeTruthy();
     expect(fixturesRoute).toBeTruthy();
+    expect(staffRoute).toBeTruthy();
   });
 
   it('should keep information outside the team tab route', () => {

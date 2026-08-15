@@ -16,17 +16,9 @@ import { NationService } from '../../services/nation.service';
 import { calculateAge } from '../../utils/date-utils';
 import { getNationFlagUrl } from '../../utils/nation-map-utils';
 import { INation } from '../../models/nation.model';
+import { MedicStats } from '../../models/medic-stats.model';
 
-interface CoachStats {
-  attack: number;
-  defend: number;
-  control: number;
-  goalkeeper: number;
-  tactic: number;
-  fitness: number;
-}
-
-interface CoachDetailsResponse {
+interface MedicDetailsResponse {
   name: string;
   surname: string;
   dateOfBirth?: string;
@@ -34,7 +26,7 @@ interface CoachDetailsResponse {
   nationID?: string | null;
   weight: number;
   height: number;
-  coachStats: CoachStats | null;
+  medicStats: MedicStats | null;
   contracts: Array<{
     startDate: string;
     endDate?: string | null;
@@ -48,21 +40,21 @@ interface ContractHistoryRow {
   period: string;
 }
 
-interface CoachStatRow {
+interface MedicStatRow {
   name: string;
   value: number;
 }
 
 @Component({
-  selector: 'app-coach-profile',
+  selector: 'app-medic-profile',
   imports: [CommonModule, MatButtonModule, MatIconModule, Card, DataTable],
-  templateUrl: './coach-profile.html',
-  styleUrl: './coach-profile.css',
+  templateUrl: './medic-profile.html',
+  styleUrl: '../coach-profile/coach-profile.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoachProfile implements OnInit, OnDestroy {
-  coachDetails: CoachDetailsResponse | null = null;
-  coachName = '';
+export class MedicProfile implements OnInit, OnDestroy {
+  medicDetails: MedicDetailsResponse | null = null;
+  medicName = '';
   dateOfBirth = '';
   age: number | null = null;
   placeOfBirth = '';
@@ -81,7 +73,7 @@ export class CoachProfile implements OnInit, OnDestroy {
     { key: 'period', header: 'Period', width: '40%' }
   ];
   contractHistory: ContractHistoryRow[] = [];
-  coachStats: CoachStatRow[] = [];
+  medicStats: MedicStatRow[] = [];
 
   private readonly destroy$ = new Subject<void>();
 
@@ -94,14 +86,14 @@ export class CoachProfile implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const coachID = this.route.snapshot.paramMap.get('id');
-    if (!coachID) {
-      this.error = 'No coach ID provided';
+    const medicID = this.route.snapshot.paramMap.get('id');
+    if (!medicID) {
+      this.error = 'No medic ID provided';
       this.loading = false;
       return;
     }
 
-    this.loadCoachDetails(coachID);
+    this.loadMedicDetails(medicID);
   }
 
   ngOnDestroy(): void {
@@ -125,33 +117,33 @@ export class CoachProfile implements OnInit, OnDestroy {
     return 'text-green-400';
   }
 
-  private loadCoachDetails(coachID: string): void {
+  private loadMedicDetails(medicID: string): void {
     forkJoin({
-      coach: this.teamsService.getStaffDetails(coachID),
+      medic: this.teamsService.getStaffDetails(medicID),
       nations: this.nationService.getAll()
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ({ coach, nations }: { coach: CoachDetailsResponse; nations: INation[] }) => {
-          this.coachDetails = coach;
-          this.coachName = `${coach.name ?? ''} ${coach.surname ?? ''}`.trim();
-          this.dateOfBirth = this.formatDate(coach.dateOfBirth);
-          this.age = calculateAge(coach.dateOfBirth);
-          this.placeOfBirth = coach.placeOfBirth ?? '';
-          this.weight = coach.weight;
-          this.height = coach.height;
+        next: ({ medic, nations }: { medic: MedicDetailsResponse; nations: INation[] }) => {
+          this.medicDetails = medic;
+          this.medicName = `${medic.name ?? ''} ${medic.surname ?? ''}`.trim();
+          this.dateOfBirth = this.formatDate(medic.dateOfBirth);
+          this.age = calculateAge(medic.dateOfBirth);
+          this.placeOfBirth = medic.placeOfBirth ?? '';
+          this.weight = medic.weight;
+          this.height = medic.height;
 
-          const nation = coach.nationID ? nations.find(item => item.nationID === coach.nationID) : undefined;
+          const nation = medic.nationID ? nations.find(item => item.nationID === medic.nationID) : undefined;
           this.nationalityName = nation?.name ?? '';
           this.nationalityFlagUrl = nation ? getNationFlagUrl(nation) : '';
           this.transformContracts();
-          this.transformCoachStats();
+          this.transformMedicStats();
           this.loading = false;
           this.cdr.markForCheck();
         },
         error: error => {
-          console.error('Error loading coach profile:', error);
-          this.error = 'Failed to load coach profile';
+          console.error('Error loading medic profile:', error);
+          this.error = 'Failed to load medic profile';
           this.loading = false;
           this.cdr.markForCheck();
         }
@@ -159,12 +151,12 @@ export class CoachProfile implements OnInit, OnDestroy {
   }
 
   private transformContracts(): void {
-    if (!this.coachDetails?.contracts) {
+    if (!this.medicDetails?.contracts) {
       this.contractHistory = [];
       return;
     }
 
-    const activeContract = this.coachDetails.contracts.find(
+    const activeContract = this.medicDetails.contracts.find(
       contract => !contract.endDate || new Date(contract.endDate) > new Date()
     );
 
@@ -174,22 +166,20 @@ export class CoachProfile implements OnInit, OnDestroy {
       this.currentWage = activeContract.wage;
     }
 
-    this.contractHistory = this.coachDetails.contracts.map(contract => ({
+    this.contractHistory = this.medicDetails.contracts.map(contract => ({
       team: contract.team?.name ?? 'Unknown',
       period: this.formatContractPeriod(contract.startDate, contract.endDate)
     }));
   }
 
-  private transformCoachStats(): void {
-    const stats = this.coachDetails?.coachStats;
-    this.coachStats = stats
+  private transformMedicStats(): void {
+    const stats = this.medicDetails?.medicStats;
+    this.medicStats = stats
       ? [
-          { name: 'Attack', value: stats.attack },
-          { name: 'Defend', value: stats.defend },
-          { name: 'Control', value: stats.control },
-          { name: 'Goalkeeper', value: stats.goalkeeper },
-          { name: 'Tactic', value: stats.tactic },
-          { name: 'Fitness', value: stats.fitness }
+          { name: 'Diagnosis', value: stats.diagnosis },
+          { name: 'Treatment', value: stats.treatment },
+          { name: 'Rehabilitation', value: stats.rehabilitation },
+          { name: 'Prevention', value: stats.prevention }
         ]
       : [];
   }
