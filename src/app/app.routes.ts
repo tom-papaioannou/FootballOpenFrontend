@@ -13,6 +13,7 @@ import { Tactics } from './components/team/tactics/tactics';
 import { TacticsDetail } from './components/team/tactics-detail/tactics-detail';
 import { Fixtures } from './components/team/fixtures/fixtures';
 import { Information } from './components/team/information/information';
+import { Staff } from './components/team/staff/staff';
 import { Servers } from './components/servers/servers';
 import { ServerDetails } from './components/server-details/server-details';
 import { guestsGuard } from './guards/guests-guard';
@@ -61,6 +62,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/manager-profile/manager-profile').then(m => m.ManagerProfile)
     },
     {
+        path: 'coach-profile/:id',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/coach-profile/coach-profile').then(m => m.CoachProfile)
+    },
+    {
         path: 'competitions',
         canActivate: [authenticationGuard],
         loadComponent: () => import('./components/world-map/world-map').then(m => m.WorldMap)
@@ -73,6 +79,8 @@ export const routes: Routes = [
     { path: 'team/tactics', canActivate: [authenticationGuard], component: Tactics },
     { path: 'team/tactics/:id', canActivate: [authenticationGuard], component: TacticsDetail },
     { path: 'team/information', canActivate: [authenticationGuard], component: Information },
+    { path: 'team/staff', canActivate: [authenticationGuard], component: Staff },
+    { path: 'team/:teamID/staff', canActivate: [authenticationGuard], component: Staff },
     { path: 'team', canActivate: [authenticationGuard], component: Team,
         children: [
             { path: '', redirectTo: 'squad', pathMatch: 'full' },

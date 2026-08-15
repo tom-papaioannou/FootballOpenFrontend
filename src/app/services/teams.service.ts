@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment.development';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Team } from '../models/competition.model';
 import { Person } from '../models/player-enums.model';
+import { TeamStaffMember } from '../models/team-staff.model';
 import {
   TeamTacticPriority,
   TeamTacticPriorityType,
@@ -53,6 +54,10 @@ export class TeamsService {
     return this.http.get<Person[]>(`${environment.apiUrl}/api/teams/getTeamSquad/${teamID}`);
   }
 
+  getTeamStaff(teamID: string): Observable<TeamStaffMember[]> {
+    return this.http.get<TeamStaffMember[]>(`${environment.apiUrl}/api/teams/getTeamStaff/${teamID}`);
+  }
+
   updatePlayerShirtNumber(teamID: string, personID: string, shirtNumber: number): Observable<void> {
     return this.http.put<void>(`${environment.apiUrl}/api/teams/updatePlayerShirtNumber`, {
       teamID,
@@ -94,6 +99,10 @@ export class TeamsService {
 
   getManagerDetails(managerID: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}/api/teams/getManagerDetails/${managerID}`);
+  }
+
+  getCoachDetails(coachID: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/teams/getCoachDetails/${coachID}`);
   }
 
   getManagerProfileSummary(managerID: string): Observable<any> {
