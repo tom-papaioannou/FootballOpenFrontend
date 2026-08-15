@@ -1,0 +1,34 @@
+<div class="p-2">
+  <ng-template #nameTemplate let-staffMember>
+    <button
+      type="button"
+      class="staff-name-link"
+      (click)="openStaffProfile($event, staffMember)">
+      {{ staffMember.name }}
+    </button>
+  </ng-template>
+
+  <ng-template #nationalityTemplate let-staffMember>
+    @if (staffMember.nationalityFlagUrl) {
+      <img
+        class="nationality-flag"
+        [src]="staffMember.nationalityFlagUrl"
+        [alt]="staffMember.nationalityName + ' flag'"
+        [title]="staffMember.nationalityName" />
+    } @else {
+      <span>-</span>
+    }
+  </ng-template>
+
+  <app-card appearance="outlined">
+    <header class="staff-header">
+      <h1>{{ teamName }} Staff</h1>
+    </header>
+
+    <app-data-table
+      [data]="staff"
+      class="staff-theme"
+      [columns]="$any(displayedColumns)">
+    </app-data-table>
+  </app-card>
+</div>

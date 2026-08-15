@@ -1,0 +1,36 @@
+.staff-header {
+  margin: 0 0 1rem;
+  color: white;
+}
+
+.staff-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.staff-name-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.staff-theme {
+  --dt-header-color: rgba(193, 193, 193, 1);
+  --dt-data-bg: transparent;
+  --dt-cell-color: white;
+}
+
+.nationality-flag {
+  display: inline-block;
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
+  vertical-align: middle;
+}
