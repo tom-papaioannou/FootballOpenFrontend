@@ -1,0 +1,72 @@
+<div class="p-4">
+  <div class="flex items-center mb-4">
+    <button mat-icon-button (click)="goBack()" class="mr-2" aria-label="Back to staff">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="text-2xl font-bold">{{ medicName || 'Medic Profile' }}@if (medicName) { (Medic)}</h1>
+  </div>
+
+  @if (loading) {
+    <div class="text-center p-8"><p>Loading medic profile...</p></div>
+  }
+
+  @if (error) {
+    <div class="text-center p-8 text-red-500"><p>{{ error }}</p></div>
+  }
+
+  @if (!loading && !error && medicDetails) {
+    <div class="coach-profile-layout">
+      <app-card class="personal-card" appearance="outlined">
+        <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Personal</h3>
+        <div class="personal-details-layout">
+          <div class="coach-portrait-placeholder">
+            <img class="coach-portrait-image" src="assets/player-card.png" alt="Medic portrait">
+          </div>
+          <div class="personal-details-content">
+            @if (nationalityName) {
+              <div class="nationality-line">
+                <span>{{ nationalityName }}</span>
+                @if (nationalityFlagUrl) {
+                  <img class="nationality-flag" [src]="nationalityFlagUrl" [alt]="nationalityName + ' flag'">
+                }
+              </div>
+            }
+            @if (dateOfBirth) { <span>{{ dateOfBirth }}</span> }
+            @if (age !== null) { <span>{{ age }} years old</span> }
+            @if (placeOfBirth) { <span>{{ placeOfBirth }}</span> }
+            @if (height !== null) { <span>{{ height }} cm</span> }
+            @if (weight !== null) { <span>{{ weight }} kg</span> }
+          </div>
+          <strong class="coach-team-name">{{ currentTeam }}</strong>
+          <div class="personal-contract-content">
+            @if (currentWage !== null) { <span>{{ currentWage }} &euro; per week</span> }
+            @if (currentContractExpiry) { <span>until {{ currentContractExpiry }}</span> }
+          </div>
+        </div>
+      </app-card>
+
+      <app-card class="coach-stats-card" appearance="outlined">
+        <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Medic Stats</h3>
+        @if (medicStats.length > 0) {
+          <div class="coach-stats-grid">
+            @for (stat of medicStats; track stat.name) {
+              <div class="stats-row flex items-center justify-between">
+                <span class="text-sm">{{ stat.name }}</span>
+                <span class="text-sm font-semibold" [ngClass]="getStatValueClass(stat.value)">{{ stat.value }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="text-sm">No medic stats available.</p>
+        }
+      </app-card>
+
+      @if (contractHistory.length > 0) {
+        <app-card class="history-card" appearance="outlined">
+          <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">History</h3>
+          <app-data-table [data]="contractHistory" [columns]="$any(contractsColumns)" class="coach-history-theme"></app-data-table>
+        </app-card>
+      }
+    </div>
+  }
+</div>

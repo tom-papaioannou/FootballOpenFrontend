@@ -105,6 +105,10 @@ export class TeamsService {
     return this.http.get(`${environment.apiUrl}/api/teams/getCoachDetails/${coachID}`);
   }
 
+  getStaffDetails(staffID: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/teams/getStaffDetails/${staffID}`);
+  }
+
   getManagerProfileSummary(managerID: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}/api/teams/getManagerProfileSummary/${managerID}`);
   }

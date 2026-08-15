@@ -31,11 +31,12 @@ describe('Team', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render squad and fixtures tabs', () => {
+  it('should render squad, fixtures, and staff tabs', () => {
     const tabs = fixture.debugElement.queryAll(By.css('.team-tabs a'));
 
-    expect(tabs.length).toBe(2);
+    expect(tabs.length).toBe(3);
     expect(tabs[0].nativeElement.textContent.trim()).toBe('Squad');
     expect(tabs[1].nativeElement.textContent.trim()).toBe('Fixtures');
+    expect(tabs[2].nativeElement.textContent.trim()).toBe('Staff');
   });
 });
