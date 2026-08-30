@@ -438,7 +438,7 @@
 
 .tactic-popup-select,
 .tactic-edit-input {
-  width: 180px;
+  width: 260px;
 }
 
 .tactic-popup-select,
@@ -505,7 +505,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  width: 180px;
+  width: 260px;
   min-width: 0;
 }
 

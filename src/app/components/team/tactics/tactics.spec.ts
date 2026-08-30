@@ -263,7 +263,12 @@ describe('Tactics', () => {
         isMain: false,
         Formation: Formation.Four_Three_Three,
         TacticMentality: component.tacticForm.get('TacticMentality')?.value,
-        PassingMentality: component.tacticForm.get('PassingMentality')?.value
+        PassingMentality: component.tacticForm.get('PassingMentality')?.value,
+        AttackLeft: true,
+        AttackMiddle: true,
+        AttackRight: true,
+        EarlyCrosses: false,
+        OffsideTrap: false
       });
 
       component.saveTactic();

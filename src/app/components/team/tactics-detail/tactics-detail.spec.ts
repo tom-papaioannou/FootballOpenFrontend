@@ -210,7 +210,12 @@ describe('TacticsDetail', () => {
       isMain: false,
       formation: Formation.Four_Three_Three,
       tacticMentality: TacticMentality.Balanced,
-      passingMentality: PassingMentality.Balanced
+      passingMentality: PassingMentality.Balanced,
+      attackLeft: true,
+      attackMiddle: true,
+      attackRight: true,
+      earlyCrosses: false,
+      offsideTrap: false
     });
 
     spyOn(component, 'loadTacticDetails');
@@ -237,7 +242,12 @@ describe('TacticsDetail', () => {
       isMain: updatedTactic.isMain,
       formation: updatedTactic.formation!,
       tacticMentality: updatedTactic.tacticMentality ?? TacticMentality.Balanced,
-      passingMentality: updatedTactic.passingMentality ?? PassingMentality.Balanced
+      passingMentality: updatedTactic.passingMentality ?? PassingMentality.Balanced,
+      attackLeft: true,
+      attackMiddle: true,
+      attackRight: true,
+      earlyCrosses: false,
+      offsideTrap: false
     });
 
     spyOn(component, 'loadTacticDetails');
@@ -246,6 +256,44 @@ describe('TacticsDetail', () => {
 
     expect(component.loadTacticDetails).not.toHaveBeenCalled();
     expect(component.tactic()).toEqual(updatedTactic);
+  });
+
+  it('should keep at least one attack direction selected', () => {
+    component.editModel.set({
+      name: 'Balanced',
+      isMain: false,
+      formation: Formation.Four_Four_Two,
+      tacticMentality: TacticMentality.Balanced,
+      passingMentality: PassingMentality.Balanced,
+      attackLeft: true,
+      attackMiddle: false,
+      attackRight: false,
+      earlyCrosses: false,
+      offsideTrap: false
+    });
+
+    component.onAttackDirectionChange('attackLeft', false);
+
+    expect(component.editModel().attackLeft).toBeTrue();
+  });
+
+  it('should toggle use options', () => {
+    component.editModel.set({
+      name: 'Balanced',
+      isMain: false,
+      formation: Formation.Four_Four_Two,
+      tacticMentality: TacticMentality.Balanced,
+      passingMentality: PassingMentality.Balanced,
+      attackLeft: true,
+      attackMiddle: true,
+      attackRight: true,
+      earlyCrosses: false,
+      offsideTrap: false
+    });
+
+    component.toggleTacticOption('earlyCrosses');
+
+    expect(component.editModel().earlyCrosses).toBeTrue();
   });
 
   it('should group the BP value without changing the POS value', () => {
