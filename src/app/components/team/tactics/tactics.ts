@@ -31,6 +31,8 @@ interface FormationPreviewRow {
 }
 
 type PriorityTabID = 'captain' | 'penalty' | 'freeKick' | 'corner' | 'throwIn';
+type CreateAttackDirection = 'AttackLeft' | 'AttackMiddle' | 'AttackRight';
+type CreateTacticOption = CreateAttackDirection | 'EarlyCrosses' | 'OffsideTrap';
 
 interface PriorityTab {
   id: PriorityTabID;
@@ -155,7 +157,12 @@ export class Tactics implements OnInit {
       isMain: [false],
       Formation: [Formation.None, [Validators.required]],
       TacticMentality: [TacticMentality.Balanced, [Validators.required]],
-      PassingMentality: [PassingMentality.Balanced, [Validators.required]]
+      PassingMentality: [PassingMentality.Balanced, [Validators.required]],
+      AttackLeft: [true],
+      AttackMiddle: [true],
+      AttackRight: [true],
+      EarlyCrosses: [false],
+      OffsideTrap: [false]
     });
   }
 
@@ -233,7 +240,12 @@ export class Tactics implements OnInit {
       isMain: formValue.isMain ?? false,
       Formation: formValue.Formation,
       TacticMentality: formValue.TacticMentality,
-      PassingMentality: formValue.PassingMentality
+      PassingMentality: formValue.PassingMentality,
+      AttackLeft: formValue.AttackLeft,
+      AttackMiddle: formValue.AttackMiddle,
+      AttackRight: formValue.AttackRight,
+      EarlyCrosses: formValue.EarlyCrosses,
+      OffsideTrap: formValue.OffsideTrap
     };
 
     this.tacticsService.createTeamTactic(createRequest)
@@ -271,6 +283,30 @@ export class Tactics implements OnInit {
     }
 
     this.tacticForm.patchValue({ isMain: !this.tacticForm.get('isMain')?.value });
+  }
+
+  toggleCreateTacticOption(option: CreateTacticOption): void {
+    const control = this.tacticForm.get(option);
+    const enabled = control?.value === true;
+
+    if (this.isCreateAttackDirection(option) &&
+        enabled &&
+        this.isOnlyActiveCreateAttackDirection(option)) {
+      return;
+    }
+
+    control?.setValue(!enabled);
+  }
+
+  isOnlyActiveCreateAttackDirection(direction: CreateAttackDirection): boolean {
+    const activeDirections = [
+      this.tacticForm.get('AttackLeft')?.value === true,
+      this.tacticForm.get('AttackMiddle')?.value === true,
+      this.tacticForm.get('AttackRight')?.value === true
+    ];
+    const directionIndex = ['AttackLeft', 'AttackMiddle', 'AttackRight'].indexOf(direction);
+
+    return activeDirections.filter(Boolean).length === 1 && activeDirections[directionIndex] === true;
   }
 
   selectPriorityTab(tabID: PriorityTabID): void {
@@ -344,8 +380,17 @@ export class Tactics implements OnInit {
       isMain: false,
       Formation: Formation.Four_Four_Two,
       TacticMentality: TacticMentality.Balanced,
-      PassingMentality: PassingMentality.Balanced
+      PassingMentality: PassingMentality.Balanced,
+      AttackLeft: true,
+      AttackMiddle: true,
+      AttackRight: true,
+      EarlyCrosses: false,
+      OffsideTrap: false
     };
+  }
+
+  private isCreateAttackDirection(option: CreateTacticOption): option is CreateAttackDirection {
+    return option === 'AttackLeft' || option === 'AttackMiddle' || option === 'AttackRight';
   }
 
   private loadTeamPlayers(teamID: string): void {

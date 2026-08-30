@@ -232,6 +232,58 @@
                   </select>
                 </label>
 
+                <div class="tactic-popup-field tactic-edit-field mt-2">
+                  <span class="tactic-popup-label">Attack From</span>
+                  <div class="flex w-[260px] gap-2">
+                    <button type="button"
+                      class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                      [ngClass]="tacticForm.get('AttackLeft')?.value ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+                      [disabled]="loading() || isOnlyActiveCreateAttackDirection('AttackLeft')"
+                      [attr.aria-pressed]="tacticForm.get('AttackLeft')?.value"
+                      (click)="toggleCreateTacticOption('AttackLeft')">
+                      Left
+                    </button>
+                    <button type="button"
+                      class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                      [ngClass]="tacticForm.get('AttackMiddle')?.value ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+                      [disabled]="loading() || isOnlyActiveCreateAttackDirection('AttackMiddle')"
+                      [attr.aria-pressed]="tacticForm.get('AttackMiddle')?.value"
+                      (click)="toggleCreateTacticOption('AttackMiddle')">
+                      Middle
+                    </button>
+                    <button type="button"
+                      class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                      [ngClass]="tacticForm.get('AttackRight')?.value ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+                      [disabled]="loading() || isOnlyActiveCreateAttackDirection('AttackRight')"
+                      [attr.aria-pressed]="tacticForm.get('AttackRight')?.value"
+                      (click)="toggleCreateTacticOption('AttackRight')">
+                      Right
+                    </button>
+                  </div>
+                </div>
+
+                <div class="tactic-popup-field tactic-edit-field mt-2">
+                  <span class="tactic-popup-label">Use</span>
+                  <div class="flex w-[260px] gap-2">
+                    <button type="button"
+                      class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                      [ngClass]="tacticForm.get('EarlyCrosses')?.value ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+                      [disabled]="loading()"
+                      [attr.aria-pressed]="tacticForm.get('EarlyCrosses')?.value"
+                      (click)="toggleCreateTacticOption('EarlyCrosses')">
+                      Early Crosses
+                    </button>
+                    <button type="button"
+                      class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                      [ngClass]="tacticForm.get('OffsideTrap')?.value ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+                      [disabled]="loading()"
+                      [attr.aria-pressed]="tacticForm.get('OffsideTrap')?.value"
+                      (click)="toggleCreateTacticOption('OffsideTrap')">
+                      Offside Trap
+                    </button>
+                  </div>
+                </div>
+
               </div>
           </div>
 

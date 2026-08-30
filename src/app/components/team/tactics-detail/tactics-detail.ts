@@ -171,6 +171,20 @@ interface TacticEditModel {
   formation: Formation;
   tacticMentality: TacticMentality;
   passingMentality: PassingMentality;
+  attackLeft: boolean;
+  attackMiddle: boolean;
+  attackRight: boolean;
+  earlyCrosses: boolean;
+  offsideTrap: boolean;
+}
+
+type AttackDirection = 'attackLeft' | 'attackMiddle' | 'attackRight';
+type TacticOption = AttackDirection | 'earlyCrosses' | 'offsideTrap';
+
+interface AttackArrowGeometry {
+  tip: number;
+  headBase: number;
+  shaftHeight: number;
 }
 
 export interface PitchRowPlayer {
@@ -240,7 +254,12 @@ export class TacticsDetail implements OnInit, OnDestroy {
     isMain: false,
     formation: Formation.Four_Four_Two,
     tacticMentality: TacticMentality.Balanced,
-    passingMentality: PassingMentality.Balanced
+    passingMentality: PassingMentality.Balanced,
+    attackLeft: true,
+    attackMiddle: true,
+    attackRight: true,
+    earlyCrosses: false,
+    offsideTrap: false
   });
 
   /** Tracks the position of the currently dragged player (null when not dragging) */
@@ -476,7 +495,12 @@ export class TacticsDetail implements OnInit, OnDestroy {
       isMain: model.isMain,
       formation: Number(model.formation) as Formation,
       tacticMentality: Number(model.tacticMentality) as TacticMentality,
-      passingMentality: Number(model.passingMentality) as PassingMentality
+      passingMentality: Number(model.passingMentality) as PassingMentality,
+      attackLeft: model.attackLeft,
+      attackMiddle: model.attackMiddle,
+      attackRight: model.attackRight,
+      earlyCrosses: model.earlyCrosses,
+      offsideTrap: model.offsideTrap
     };
     const previousFormation = tactic.formation ?? Formation.Four_Four_Two;
 
@@ -515,8 +539,48 @@ export class TacticsDetail implements OnInit, OnDestroy {
       isMain: tactic.isMain,
       formation: tactic.formation ?? Formation.Four_Four_Two,
       tacticMentality: tactic.tacticMentality ?? TacticMentality.Balanced,
-      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced
+      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced,
+      attackLeft: tactic.attackLeft ?? true,
+      attackMiddle: tactic.attackMiddle ?? true,
+      attackRight: tactic.attackRight ?? true,
+      earlyCrosses: tactic.earlyCrosses ?? false,
+      offsideTrap: tactic.offsideTrap ?? false
     });
+  }
+
+  onAttackDirectionChange(direction: AttackDirection, enabled: boolean): void {
+    const model = this.editModel();
+    const activeDirections = [model.attackLeft, model.attackMiddle, model.attackRight]
+      .filter(Boolean)
+      .length;
+
+    if (!enabled && model[direction] && activeDirections === 1) {
+      return;
+    }
+
+    this.editModel.set({ ...model, [direction]: enabled });
+  }
+
+  toggleTacticOption(option: TacticOption): void {
+    const model = this.editModel();
+
+    if (option === 'attackLeft' || option === 'attackMiddle' || option === 'attackRight') {
+      this.onAttackDirectionChange(option, !model[option]);
+      return;
+    }
+
+    this.editModel.set({ ...model, [option]: !model[option] });
+  }
+
+  getAttackArrowGeometry(passingMentality: PassingMentality | undefined): AttackArrowGeometry {
+    switch (passingMentality ?? PassingMentality.Balanced) {
+      case PassingMentality.Short:
+        return { tip: 36, headBase: 51, shaftHeight: 25 };
+      case PassingMentality.Balanced:
+        return { tip: 28, headBase: 43, shaftHeight: 33 };
+      default:
+        return { tip: 20, headBase: 35, shaftHeight: 41 };
+    }
   }
 
   getHomeShirtColor(): string {

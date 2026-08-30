@@ -81,6 +81,58 @@
             }
           </select>
         </label>
+
+        <fieldset class="mt-2 border-0 p-0">
+          <legend class="player-popup-label mb-1.5 block text-left">Attack From</legend>
+          <div class="flex gap-2">
+            <button type="button"
+              class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              [ngClass]="editModel().attackLeft ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+              [disabled]="editSaving() || (editModel().attackLeft && !editModel().attackMiddle && !editModel().attackRight)"
+              [attr.aria-pressed]="editModel().attackLeft"
+              (click)="toggleTacticOption('attackLeft')">
+            Left
+            </button>
+            <button type="button"
+              class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              [ngClass]="editModel().attackMiddle ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+              [disabled]="editSaving() || (!editModel().attackLeft && editModel().attackMiddle && !editModel().attackRight)"
+              [attr.aria-pressed]="editModel().attackMiddle"
+              (click)="toggleTacticOption('attackMiddle')">
+            Middle
+            </button>
+            <button type="button"
+              class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              [ngClass]="editModel().attackRight ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+              [disabled]="editSaving() || (!editModel().attackLeft && !editModel().attackMiddle && editModel().attackRight)"
+              [attr.aria-pressed]="editModel().attackRight"
+              (click)="toggleTacticOption('attackRight')">
+            Right
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset class="mt-2 border-0 p-0">
+          <legend class="player-popup-label mb-1.5 block text-left">Use</legend>
+          <div class="flex gap-2">
+            <button type="button"
+              class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              [ngClass]="editModel().earlyCrosses ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+              [disabled]="editSaving()"
+              [attr.aria-pressed]="editModel().earlyCrosses"
+              (click)="toggleTacticOption('earlyCrosses')">
+            Early Crosses
+            </button>
+            <button type="button"
+              class="flex-1 cursor-pointer rounded-md border px-2 py-1 text-[0.8rem] transition-all duration-150 ease-out hover:border-slate-300/70 hover:brightness-125 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              [ngClass]="editModel().offsideTrap ? 'border-slate-400/45 bg-slate-900/70 text-slate-50' : 'border-gray-500/30 bg-gray-500/20 text-gray-400'"
+              [disabled]="editSaving()"
+              [attr.aria-pressed]="editModel().offsideTrap"
+              (click)="toggleTacticOption('offsideTrap')">
+            Offside Trap
+            </button>
+          </div>
+        </fieldset>
       </div>
 
       <div class="tactic-edit-actions">
@@ -95,12 +147,31 @@
       <section class="xl:col-span-8">
         <div class="bg-surface-container-low rounded-xl relative aspect-[3/4] md:aspect-[10/16] border border-white/5 shadow-2xl w-full max-w-3xl min-h-[654px]">
           <!-- Pitch Background -->
-          <div class="absolute inset-0 bg-primary-container pitch-grid rounded-xl overflow-hidden" style="background-color: #254736;">
+          <div class="absolute inset-0 z-0 bg-primary-container pitch-grid rounded-xl overflow-hidden" style="background-color: #254736;">
             <img src="assets/images/tactics/SimpleBackground.png" alt="Tactics formation" class="h-full" />
           </div>
 
+          <svg class="pointer-events-none absolute inset-0 z-10 h-full w-full"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden="true">
+            @let arrow = getAttackArrowGeometry(tactic()?.passingMentality);
+            @if (tactic()?.attackLeft ?? true) {
+              <rect x="11.5" [attr.y]="arrow.headBase" width="7" [attr.height]="arrow.shaftHeight" fill="rgba(0, 0, 0, 0.45)" />
+              <path [attr.d]="'M 15 ' + arrow.tip + ' L 7 ' + arrow.headBase + ' L 23 ' + arrow.headBase + ' Z'" fill="rgba(0, 0, 0, 0.45)" />
+            }
+            @if (tactic()?.attackMiddle ?? true) {
+              <rect x="46.5" [attr.y]="arrow.headBase" width="7" [attr.height]="arrow.shaftHeight" fill="rgba(0, 0, 0, 0.45)" />
+              <path [attr.d]="'M 50 ' + arrow.tip + ' L 42 ' + arrow.headBase + ' L 58 ' + arrow.headBase + ' Z'" fill="rgba(0, 0, 0, 0.45)" />
+            }
+            @if (tactic()?.attackRight ?? true) {
+              <rect x="81.5" [attr.y]="arrow.headBase" width="7" [attr.height]="arrow.shaftHeight" fill="rgba(0, 0, 0, 0.45)" />
+              <path [attr.d]="'M 85 ' + arrow.tip + ' L 77 ' + arrow.headBase + ' L 93 ' + arrow.headBase + ' Z'" fill="rgba(0, 0, 0, 0.45)" />
+            }
+          </svg>
+
           <!-- Tactical Nodes -->
-          <div class="absolute inset-0 border-4 border-white rounded-lg">
+          <div class="absolute inset-0 z-20 border-4 border-white rounded-lg">
             <div class="absolute inset-0">
               @for (row of pitchRows(); track row.rowIndex) {
                 <div

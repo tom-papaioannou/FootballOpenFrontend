@@ -85,6 +85,11 @@ export interface Tactic {
   formation?: Formation;
   tacticMentality?: TacticMentality;
   passingMentality?: PassingMentality;
+  attackLeft?: boolean;
+  attackMiddle?: boolean;
+  attackRight?: boolean;
+  earlyCrosses?: boolean;
+  offsideTrap?: boolean;
 }
 
 /**
@@ -98,6 +103,11 @@ export interface CreateTacticRequest {
   Formation?: Formation;
   TacticMentality?: TacticMentality;
   PassingMentality?: PassingMentality;
+  AttackLeft: boolean;
+  AttackMiddle: boolean;
+  AttackRight: boolean;
+  EarlyCrosses: boolean;
+  OffsideTrap: boolean;
 }
 
 /**
@@ -109,6 +119,11 @@ export interface UpdateTacticRequest {
   formation: Formation;
   tacticMentality: TacticMentality;
   passingMentality: PassingMentality;
+  attackLeft: boolean;
+  attackMiddle: boolean;
+  attackRight: boolean;
+  earlyCrosses: boolean;
+  offsideTrap: boolean;
 }
 
 /**
